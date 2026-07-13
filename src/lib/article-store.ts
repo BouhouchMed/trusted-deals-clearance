@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { articles as seedArticles } from "@/lib/data";
+import { getSupabaseAdmin } from "@/lib/supabase-server";
 import { Article, CategorySlug } from "@/lib/types";
 
 const adminArticlesPath = path.join(process.cwd(), "src", "lib", "admin-articles.json");
@@ -17,6 +18,12 @@ export type ArticleInput = {
 };
 
 export async function getAdminArticles(): Promise<Article[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase.from("articles").select("*").order("published_at", { ascending: false });
+    if (!error && data) return data.map(mapArticleRow);
+  }
+
   try {
     const raw = await readFile(adminArticlesPath, "utf8");
     return JSON.parse(raw) as Article[];
@@ -26,7 +33,9 @@ export async function getAdminArticles(): Promise<Article[]> {
 }
 
 export async function getAllArticles(): Promise<Article[]> {
-  return [...(await getAdminArticles()), ...seedArticles];
+  const adminArticles = await getAdminArticles();
+  const adminSlugs = new Set(adminArticles.map((article) => article.slug));
+  return [...adminArticles, ...seedArticles.filter((article) => !adminSlugs.has(article.slug))];
 }
 
 export async function getArticleBySlug(slug: string) {
@@ -55,6 +64,13 @@ export async function saveAdminArticle(input: ArticleInput) {
     tags: input.tags.length ? input.tags : ["Shopping Guide"]
   };
 
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("articles").insert(mapArticleToRow(article));
+    if (error) throw new Error(error.message);
+    return article;
+  }
+
   await writeFile(adminArticlesPath, `${JSON.stringify([article, ...adminArticles], null, 2)}\n`, "utf8");
   return article;
 }
@@ -82,6 +98,13 @@ export async function updateArticle(slug: string, input: ArticleInput) {
     tags: input.tags.length ? input.tags : ["Shopping Guide"]
   };
 
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("articles").upsert(mapArticleToRow(updated), { onConflict: "slug" });
+    if (error) throw new Error(error.message);
+    return updated;
+  }
+
   const index = adminArticles.findIndex((article) => article.slug === slug);
   if (index >= 0) {
     const nextArticles = [...adminArticles];
@@ -100,4 +123,44 @@ function normalizeSlug(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+type ArticleRow = {
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  category_slug: CategorySlug;
+  product_slug: string | null;
+  image: string | null;
+  author: string | null;
+  published_at: string | null;
+  tags: string[] | null;
+};
+
+function mapArticleRow(row: ArticleRow): Article {
+  return {
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt ?? "",
+    categorySlug: row.category_slug,
+    productSlug: row.product_slug ?? undefined,
+    image: row.image ?? "",
+    author: row.author ?? "Trusted Deals Editors",
+    publishedAt: row.published_at ?? new Date().toISOString().slice(0, 10),
+    tags: row.tags ?? []
+  };
+}
+
+function mapArticleToRow(article: Article): ArticleRow {
+  return {
+    slug: article.slug,
+    title: article.title,
+    excerpt: article.excerpt,
+    category_slug: article.categorySlug,
+    product_slug: article.productSlug ?? null,
+    image: article.image,
+    author: article.author,
+    published_at: article.publishedAt,
+    tags: article.tags
+  };
 }

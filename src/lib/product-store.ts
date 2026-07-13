@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { products as seedProducts } from "@/lib/data";
+import { getSupabaseAdmin } from "@/lib/supabase-server";
 import { CategorySlug, Product } from "@/lib/types";
 
 const adminProductsPath = path.join(process.cwd(), "src", "lib", "admin-products.json");
@@ -31,6 +32,12 @@ export type ProductInput = {
 };
 
 export async function getAdminProducts(): Promise<Product[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
+    if (!error && data) return data.map(mapProductRow);
+  }
+
   try {
     const raw = await readFile(adminProductsPath, "utf8");
     return JSON.parse(raw) as Product[];
@@ -41,9 +48,10 @@ export async function getAdminProducts(): Promise<Product[]> {
 
 export async function getAllProducts(): Promise<Product[]> {
   const adminProducts = await getAdminProducts();
+  const adminSlugs = new Set(adminProducts.map((product) => product.slug));
   const state = await getProductState();
   const visibleSeedProducts = seedProducts
-    .filter((product) => !state.hiddenSlugs.includes(product.slug))
+    .filter((product) => !state.hiddenSlugs.includes(product.slug) && !adminSlugs.has(product.slug))
     .map((product) => ({ ...product, ...state.overrides[product.slug] }));
   const visibleAdminProducts = adminProducts
     .filter((product) => !state.hiddenSlugs.includes(product.slug))
@@ -96,6 +104,13 @@ export async function saveAdminProduct(input: ProductInput) {
     seoDescription: input.shortDescription.trim()
   };
 
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("products").insert(mapProductToRow(product));
+    if (error) throw new Error(error.message);
+    return product;
+  }
+
   const nextProducts = [product, ...adminProducts];
   await writeFile(adminProductsPath, `${JSON.stringify(nextProducts, null, 2)}\n`, "utf8");
   return product;
@@ -125,11 +140,26 @@ export async function duplicateProduct(slug: string) {
     trending: false,
     seoTitle: `${source.title} Copy Deal`
   };
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("products").insert(mapProductToRow(product));
+    if (error) throw new Error(error.message);
+    return product;
+  }
+
   await writeFile(adminProductsPath, `${JSON.stringify([product, ...adminProducts], null, 2)}\n`, "utf8");
   return product;
 }
 
 export async function deleteProduct(slug: string) {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("products").delete().eq("slug", slug);
+    if (error) throw new Error(error.message);
+    return;
+  }
+
   const adminProducts = await getAdminProducts();
   const nextAdminProducts = adminProducts.filter((product) => product.slug !== slug);
   const wasAdminProduct = nextAdminProducts.length !== adminProducts.length;
@@ -178,6 +208,13 @@ export async function updateProduct(slug: string, input: ProductInput) {
     seoTitle: `${input.title.trim()} Deal`,
     seoDescription: input.shortDescription.trim()
   };
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("products").upsert(mapProductToRow(updated), { onConflict: "slug" });
+    if (error) throw new Error(error.message);
+    return updated;
+  }
 
   const adminIndex = adminProducts.findIndex((product) => product.slug === slug);
   if (adminIndex >= 0) {
@@ -239,4 +276,101 @@ function normalizeSlug(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+type ProductRow = {
+  id: string;
+  slug: string;
+  title: string;
+  short_description: string | null;
+  long_description: string | null;
+  image: string | null;
+  gallery: string[] | null;
+  store_id: string;
+  brand: string | null;
+  category_slug: CategorySlug;
+  regular_price: number;
+  sale_price: number;
+  rating: number | null;
+  coupon_code: string | null;
+  affiliate_url: string;
+  affiliate_network: string | null;
+  availability: Product["availability"] | null;
+  expiration: string | null;
+  featured: boolean | null;
+  trending: boolean | null;
+  clearance: boolean | null;
+  published: boolean | null;
+  specs: string[] | null;
+  pros: string[] | null;
+  cons: string[] | null;
+  tips: string[] | null;
+  seo_title: string | null;
+  seo_description: string | null;
+};
+
+function mapProductRow(row: ProductRow): Product {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    shortDescription: row.short_description ?? "",
+    longDescription: row.long_description ?? row.short_description ?? "",
+    image: row.image ?? "",
+    gallery: row.gallery ?? [row.image ?? ""],
+    storeId: row.store_id,
+    brand: row.brand ?? "",
+    categorySlug: row.category_slug,
+    regularPrice: Number(row.regular_price),
+    salePrice: Number(row.sale_price),
+    rating: Number(row.rating ?? 4.5),
+    couponCode: row.coupon_code ?? undefined,
+    affiliateUrl: row.affiliate_url,
+    affiliateNetwork: row.affiliate_network ?? row.store_id,
+    availability: row.availability ?? "In Stock",
+    expiration: row.expiration ?? new Date().toISOString().slice(0, 10),
+    featured: Boolean(row.featured),
+    trending: Boolean(row.trending),
+    clearance: Boolean(row.clearance),
+    published: row.published !== false,
+    specs: row.specs ?? [],
+    pros: row.pros ?? [],
+    cons: row.cons ?? [],
+    tips: row.tips ?? [],
+    seoTitle: row.seo_title ?? row.title,
+    seoDescription: row.seo_description ?? row.short_description ?? ""
+  };
+}
+
+function mapProductToRow(product: Product): ProductRow {
+  return {
+    id: product.id,
+    slug: product.slug,
+    title: product.title,
+    short_description: product.shortDescription,
+    long_description: product.longDescription,
+    image: product.image,
+    gallery: product.gallery,
+    store_id: product.storeId,
+    brand: product.brand,
+    category_slug: product.categorySlug,
+    regular_price: product.regularPrice,
+    sale_price: product.salePrice,
+    rating: product.rating,
+    coupon_code: product.couponCode ?? null,
+    affiliate_url: product.affiliateUrl,
+    affiliate_network: product.affiliateNetwork,
+    availability: product.availability,
+    expiration: product.expiration,
+    featured: product.featured,
+    trending: product.trending,
+    clearance: product.clearance,
+    published: product.published,
+    specs: product.specs,
+    pros: product.pros,
+    cons: product.cons,
+    tips: product.tips,
+    seo_title: product.seoTitle,
+    seo_description: product.seoDescription
+  };
 }

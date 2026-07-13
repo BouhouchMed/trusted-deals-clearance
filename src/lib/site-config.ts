@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { getSupabaseAdmin } from "@/lib/supabase-server";
 
 export type SiteConfig = {
   brandName: string;
@@ -72,6 +73,12 @@ export const defaultSiteConfig: SiteConfig = {
 const configPath = path.join(process.cwd(), "src", "lib", "site-config.json");
 
 export async function getSiteConfig(): Promise<SiteConfig> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase.from("settings").select("value").eq("key", "site_config").single();
+    if (!error && data?.value) return mergeConfig(data.value as Partial<SiteConfig>);
+  }
+
   try {
     const raw = await readFile(configPath, "utf8");
     return mergeConfig(JSON.parse(raw) as Partial<SiteConfig>);
@@ -81,6 +88,17 @@ export async function getSiteConfig(): Promise<SiteConfig> {
 }
 
 export async function saveSiteConfig(config: SiteConfig) {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("settings").upsert({
+      key: "site_config",
+      value: mergeConfig(config),
+      updated_at: new Date().toISOString()
+    });
+    if (error) throw new Error(error.message);
+    return;
+  }
+
   await writeFile(configPath, `${JSON.stringify(mergeConfig(config), null, 2)}\n`, "utf8");
 }
 

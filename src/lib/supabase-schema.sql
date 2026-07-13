@@ -1,83 +1,58 @@
-create table stores (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
+create table if not exists products (
+  id text primary key,
   slug text unique not null,
-  logo_url text,
-  website_url text,
-  created_at timestamptz default now()
-);
-
-create table categories (
-  id uuid primary key default gen_random_uuid(),
   title text not null,
-  slug text unique not null,
-  description text,
-  image_url text,
-  icon text,
-  seo_title text,
-  seo_description text,
-  created_at timestamptz default now()
-);
-
-create table products (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  slug text unique not null,
   short_description text,
   long_description text,
-  featured_image text,
-  gallery_images text[] default '{}',
-  store_id uuid references stores(id),
+  image text,
+  gallery text[] default '{}',
+  store_id text not null,
   brand text,
-  category_id uuid references categories(id),
-  regular_price numeric(10,2),
-  sale_price numeric(10,2),
-  discount integer,
-  affiliate_link text not null,
+  category_slug text not null,
+  regular_price numeric(10,2) not null default 0,
+  sale_price numeric(10,2) not null default 0,
+  rating numeric(3,2) default 4.5,
   coupon_code text,
-  availability text,
-  stock_status text,
-  deal_expiration timestamptz,
+  affiliate_url text not null,
+  affiliate_network text,
+  availability text default 'In Stock',
+  expiration date,
   featured boolean default false,
   trending boolean default false,
   clearance boolean default false,
-  status text default 'draft',
+  published boolean default true,
+  specs text[] default '{}',
+  pros text[] default '{}',
+  cons text[] default '{}',
+  tips text[] default '{}',
   seo_title text,
   seo_description text,
-  hero_enabled boolean default false,
-  hero_sort_order integer,
-  hero_starts_at timestamptz,
-  hero_ends_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
 
-create table articles (
-  id uuid primary key default gen_random_uuid(),
+create table if not exists articles (
+  slug text primary key,
   title text not null,
-  slug text unique not null,
-  body jsonb,
   excerpt text,
-  featured_image text,
-  product_id uuid references products(id),
-  category_id uuid references categories(id),
-  tags text[] default '{}',
-  seo_title text,
-  seo_description text,
+  category_slug text not null,
+  product_slug text,
+  image text,
   author text,
-  status text default 'draft',
-  publish_date timestamptz,
-  created_at timestamptz default now()
+  published_at date default current_date,
+  tags text[] default '{}',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
-create table subscribers (
+create table if not exists subscribers (
   id uuid primary key default gen_random_uuid(),
   email text unique not null,
   source text,
   created_at timestamptz default now()
 );
 
-create table media (
+create table if not exists media (
   id uuid primary key default gen_random_uuid(),
   title text,
   url text not null,
@@ -86,13 +61,13 @@ create table media (
   created_at timestamptz default now()
 );
 
-create table settings (
+create table if not exists settings (
   key text primary key,
   value jsonb not null,
   updated_at timestamptz default now()
 );
 
-create table affiliate_clicks (
+create table if not exists affiliate_clicks (
   id uuid primary key default gen_random_uuid(),
   product_id text,
   store_id text,
@@ -111,7 +86,12 @@ create table affiliate_clicks (
   created_at timestamptz default now()
 );
 
-create index affiliate_clicks_product_idx on affiliate_clicks(product_id);
-create index affiliate_clicks_category_idx on affiliate_clicks(category_id);
-create index affiliate_clicks_store_idx on affiliate_clicks(store_id);
-create index affiliate_clicks_created_idx on affiliate_clicks(created_at);
+create index if not exists products_slug_idx on products(slug);
+create index if not exists products_category_idx on products(category_slug);
+create index if not exists products_store_idx on products(store_id);
+create index if not exists articles_slug_idx on articles(slug);
+create index if not exists articles_category_idx on articles(category_slug);
+create index if not exists affiliate_clicks_product_idx on affiliate_clicks(product_id);
+create index if not exists affiliate_clicks_category_idx on affiliate_clicks(category_id);
+create index if not exists affiliate_clicks_store_idx on affiliate_clicks(store_id);
+create index if not exists affiliate_clicks_created_idx on affiliate_clicks(created_at);
