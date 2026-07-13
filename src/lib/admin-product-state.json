@@ -1,0 +1,10 @@
+{
+  "hiddenSlugs": [
+    "ninja-air-fryer-max-xl"
+  ],
+  "overrides": {
+    "samsung-55-inch-crystal-uhd-tv": {
+      "featured": false
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "brandName": "Trusted Deals & Clearance",
+  "homepage": {
+    "showHero": true,
+    "showCategories": true,
+    "showTodaysDeals": true,
+    "showTrendingDeals": true,
+    "showLatestArticles": true,
+    "showCommunity": true,
+    "showNewsletter": true,
+    "categoriesEyebrow": "Browse by aisle",
+    "categoriesTitle": "Featured Categories",
+    "todaysDealsEyebrow": "Fresh finds",
+    "todaysDealsTitle": "Today's Best Deals",
+    "trendingEyebrow": "Community favorites",
+    "trendingTitle": "Trending Deals",
+    "articlesEyebrow": "Smart shopping",
+    "articlesTitle": "Latest Articles",
+    "communityEyebrow": "Deal alerts together",
+    "communityTitle": "Join Our Facebook Community",
+    "communityText": "Join thousands of American shoppers discovering daily discounts, Walmart deals, home bargains, electronics offers and exclusive clearance finds.",
+    "newsletterTitle": "Never Miss a Great Deal",
+    "newsletterText": "Weekly editor picks, coupon reminders, and clearance alerts in one calm, useful email."
+  },
+  "footer": {
+    "aboutTitle": "Trusted Deals & Clearance",
+    "aboutText": "A premium deals magazine helping U.S. shoppers find practical savings, Walmart rollbacks, home bargains, electronics offers, and clearance gems.",
+    "showCategories": true,
+    "showLegalPages": true,
+    "showSocialMedia": true
+  }
+}
