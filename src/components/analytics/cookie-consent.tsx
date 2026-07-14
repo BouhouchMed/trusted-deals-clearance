@@ -10,7 +10,7 @@ export function CookieConsent() {
   const needsInitialChoice = useSyncExternalStore(subscribeToConsentChanges, getNeedsInitialChoice, () => false);
   const [forcedOpen, setForcedOpen] = useState(false);
   const [customizing, setCustomizing] = useState(false);
-  const [preferences, setPreferences] = useState<CookieConsentPreferences>(rejectNonEssential);
+  const [preferences, setPreferences] = useState<CookieConsentPreferences>(acceptAll);
 
   useEffect(() => {
     const openPreferences = () => {

@@ -56,14 +56,14 @@ export function canUseMetaPixel() {
 }
 
 export function getCookieConsent(): CookieConsentPreferences {
-  if (typeof window === "undefined") return { essential: true, analytics: false, marketing: false };
+  if (typeof window === "undefined") return { essential: true, analytics: true, marketing: true };
   try {
     const raw = window.localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!raw) return { essential: true, analytics: false, marketing: false };
+    if (!raw) return { essential: true, analytics: true, marketing: true };
     const parsed = JSON.parse(raw) as Partial<CookieConsentPreferences>;
     return { essential: true, analytics: Boolean(parsed.analytics), marketing: Boolean(parsed.marketing) };
   } catch {
-    return { essential: true, analytics: false, marketing: false };
+    return { essential: true, analytics: true, marketing: true };
   }
 }
 
