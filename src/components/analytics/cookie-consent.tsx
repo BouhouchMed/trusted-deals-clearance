@@ -37,8 +37,7 @@ export function CookieConsent() {
       <div>
         <h2>Cookie Preferences</h2>
         <p>
-          We use essential cookies to run the site. With your permission, analytics and marketing cookies help us
-          measure engagement and show relevant Facebook and Instagram ads.
+          We use essential cookies to run the site. With your permission, analytics and marketing cookies help us measure engagement.
         </p>
         {customizing ? (
           <div className="cookie-options">
