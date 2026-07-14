@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   BarChart3,
   CalendarClock,
-  Database,
   FileText,
   FolderTree,
   ImageIcon,
@@ -105,13 +104,6 @@ export default async function AdminPage() {
                 {category.title}
               </Link>
             ))}
-          </div>
-          <div className="admin-panel" id="settings">
-            <h3>Supabase Database</h3>
-            <p>Tables: products, categories, stores, articles, subscribers, media, settings.</p>
-            <Link href="/admin#schema">
-              <Database size={16} /> Schema ready in src/lib/supabase-schema.sql
-            </Link>
           </div>
           <div className="admin-panel" id="analytics">
             <h3>Analytics Settings</h3>
