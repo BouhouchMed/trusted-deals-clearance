@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Menu, Search, ShieldCheck, Users, X } from "lucide-react";
+import { ChevronDown, Menu, Search, Users, X } from "lucide-react";
 import { useState } from "react";
 import { settings } from "@/lib/data";
+import logo from "@/logo.png";
 
 const categoryNavItems = [
   ["Top Deals", "/category/top-deals"],
@@ -33,8 +35,7 @@ export function Header() {
     <header className="site-header">
       <div className="nav-shell">
         <Link href="/" className="brand" aria-label="Trusted Deals & Clearance home" onClick={closeMenu}>
-          <ShieldCheck size={28} />
-          <span>Trusted Deals & Clearance</span>
+          <Image className="site-logo" src={logo} alt="Trusted Deals & Clearance" priority />
         </Link>
         <button className="mobile-menu-button" type="button" aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen((current) => !current)}>
           {open ? <X size={22} /> : <Menu size={22} />}

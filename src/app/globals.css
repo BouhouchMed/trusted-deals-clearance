@@ -97,8 +97,13 @@ textarea {
   letter-spacing: 0;
 }
 
-.brand span {
-  max-width: 190px;
+.site-logo {
+  display: block;
+  width: 188px;
+  height: auto;
+  max-height: 48px;
+  border-radius: 6px;
+  object-fit: contain;
 }
 
 .mobile-menu-button {
@@ -1844,6 +1849,11 @@ textarea {
   .brand {
     grid-row: 1;
     min-width: 0;
+  }
+
+  .site-logo {
+    width: 150px;
+    max-height: 42px;
   }
 
   .hero-content {
