@@ -6,7 +6,17 @@ export const stores: Store[] = [
   { id: "walmart", name: "Walmart", logo: "W", url: "https://www.walmart.com" },
   { id: "target", name: "Target", logo: "T", url: "https://www.target.com" },
   { id: "amazon", name: "Amazon", logo: "A", url: "https://www.amazon.com" },
-  { id: "wayfair", name: "Wayfair", logo: "Wf", url: "https://www.wayfair.com" }
+  { id: "wayfair", name: "Wayfair", logo: "Wf", url: "https://www.wayfair.com" },
+  { id: "costco", name: "Costco", logo: "Co", url: "https://www.costco.com" },
+  { id: "home-depot", name: "Home Depot", logo: "HD", url: "https://www.homedepot.com" },
+  { id: "lowes", name: "Lowe's", logo: "Lo", url: "https://www.lowes.com" },
+  { id: "tjx", name: "TJX", logo: "TJ", url: "https://www.tjx.com" },
+  { id: "ross-stores", name: "Ross Stores", logo: "Rs", url: "https://www.rossstores.com" },
+  { id: "best-buy", name: "Best Buy", logo: "BB", url: "https://www.bestbuy.com" },
+  { id: "williams-sonoma", name: "Williams-Sonoma", logo: "WS", url: "https://www.williams-sonoma.com" },
+  { id: "hm", name: "H&M", logo: "HM", url: "https://www2.hm.com/en_us/index.html" },
+  { id: "burlington", name: "Burlington", logo: "Bu", url: "https://www.burlington.com" },
+  { id: "tractor-supply", name: "Tractor Supply", logo: "TS", url: "https://www.tractorsupply.com" }
 ];
 
 export const categories: Category[] = [
@@ -280,7 +290,36 @@ export const settings = {
   facebookUrl: "https://www.facebook.com/groups/1998003327099051",
   defaultCurrency: "USD",
   affiliateRedirectTarget: "same_tab",
-  approvedAffiliateDomains: ["www.walmart.com", "walmart.com", "www.target.com", "target.com", "www.amazon.com", "amazon.com", "www.wayfair.com", "wayfair.com"],
+  approvedAffiliateDomains: [
+    "www.walmart.com",
+    "walmart.com",
+    "www.target.com",
+    "target.com",
+    "www.amazon.com",
+    "amazon.com",
+    "www.wayfair.com",
+    "wayfair.com",
+    "www.costco.com",
+    "costco.com",
+    "www.homedepot.com",
+    "homedepot.com",
+    "www.lowes.com",
+    "lowes.com",
+    "www.tjx.com",
+    "tjx.com",
+    "www.rossstores.com",
+    "rossstores.com",
+    "www.bestbuy.com",
+    "bestbuy.com",
+    "www.williams-sonoma.com",
+    "williams-sonoma.com",
+    "www2.hm.com",
+    "hm.com",
+    "www.burlington.com",
+    "burlington.com",
+    "www.tractorsupply.com",
+    "tractorsupply.com"
+  ],
   adminHeroScheduleNote: "Featured hero slides are manually selected, ordered, and scheduled by admins.",
   affiliateDisclosure:
     "Trusted Deals & Clearance may earn a commission when you buy through links on our site. Our editors choose deals based on value, availability, and reader usefulness."

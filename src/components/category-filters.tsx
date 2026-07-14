@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { stores } from "@/lib/data";
 
 const filters = {
   price: [
@@ -9,13 +10,7 @@ const filters = {
     ["50-150", "$50 to $150"],
     ["150-plus", "$150+"]
   ],
-  store: [
-    ["", "Store"],
-    ["walmart", "Walmart"],
-    ["target", "Target"],
-    ["amazon", "Amazon"],
-    ["wayfair", "Wayfair"]
-  ],
+  store: [["", "Store"], ...stores.map((store) => [store.id, store.name])],
   brand: [
     ["", "Brand"],
     ["Ninja", "Ninja"],
