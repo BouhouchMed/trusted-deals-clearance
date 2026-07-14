@@ -5,6 +5,7 @@ import { CommunityLink } from "@/components/analytics/community-link";
 import { CategoryIcon } from "@/components/category-icon";
 import { HeroSlider } from "@/components/hero-slider";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { PartnersSlider } from "@/components/partners-slider";
 import { ProductCard } from "@/components/product-card";
 import { settings } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
@@ -112,6 +113,7 @@ export default async function HomePage() {
           <NewsletterForm source="homepage" />
         </section>
       ) : null}
+      <PartnersSlider />
     </>
   );
 }

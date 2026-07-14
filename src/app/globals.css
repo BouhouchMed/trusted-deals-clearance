@@ -657,6 +657,112 @@ textarea {
   outline: none;
 }
 
+.partners-slider-section {
+  overflow: hidden;
+  background: white;
+  padding: 46px 0;
+}
+
+.partners-slider-heading {
+  max-width: 1180px;
+  margin: 0 auto 20px;
+  padding: 0 24px;
+}
+
+.partners-slider-heading h2 {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.partners-slider {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  background: linear-gradient(90deg, #ffffff, #f8fafc, #ffffff);
+}
+
+.partners-slider::before,
+.partners-slider::after {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  width: min(120px, 18vw);
+  height: 100%;
+  content: "";
+  pointer-events: none;
+}
+
+.partners-slider::before {
+  left: 0;
+  background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.partners-slider::after {
+  right: 0;
+  background: linear-gradient(270deg, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.partners-track {
+  display: flex;
+  width: max-content;
+  gap: 14px;
+  padding: 18px 14px;
+  animation: partners-marquee 32s linear infinite;
+}
+
+.partners-slider:hover .partners-track {
+  animation-play-state: paused;
+}
+
+.partner-logo-card {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 178px;
+  min-height: 62px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--navy);
+  padding: 0 16px;
+  box-shadow: 0 10px 24px rgba(20, 38, 59, 0.06);
+}
+
+.partner-logo-card span {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 8px;
+  background: var(--navy);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.partner-logo-card strong {
+  overflow: hidden;
+  font-size: 0.92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes partners-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-track {
+    animation: none;
+  }
+}
+
 .footer {
   background: var(--navy);
   color: white;
