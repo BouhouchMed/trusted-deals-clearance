@@ -3,8 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CategoryFilters } from "@/components/category-filters";
 import { ProductCard } from "@/components/product-card";
-import { categories, getCategory, getDiscount, siteUrl } from "@/lib/data";
+import { getDiscount, siteUrl } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
+import { getAllCategories, getCategoryBySlug } from "@/lib/category-store";
 import { getAllProducts } from "@/lib/product-store";
 import { Product } from "@/lib/types";
 
@@ -13,13 +14,14 @@ type Props = {
   searchParams?: Promise<{ price?: string; store?: string; brand?: string; discount?: string; sort?: string }>;
 };
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const categories = await getAllCategories();
   return categories.map((category) => ({ slug: category.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const category = getCategory(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) return {};
   return {
     title: `${category.title} Deals`,
@@ -31,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const filters = (await searchParams) ?? {};
-  const category = getCategory(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
   const products = await getAllProducts();
   const allArticles = await getAllArticles();

@@ -1,7 +1,5 @@
-import Link from "next/link";
 import {
   BarChart3,
-  CalendarClock,
   FileText,
   FolderTree,
   ImageIcon,
@@ -14,11 +12,14 @@ import {
   Users
 } from "lucide-react";
 import { ArticleManager } from "@/components/admin/article-manager";
+import { CategoryManager } from "@/components/admin/category-manager";
 import { CreateProductButton } from "@/components/admin/create-product-button";
+import { HeroSliderManager } from "@/components/admin/hero-slider-manager";
 import { ProductManager } from "@/components/admin/product-manager";
 import { SiteBuilderForm } from "@/components/admin/site-builder-form";
-import { categories, stores } from "@/lib/data";
+import { stores } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
+import { getAllCategories } from "@/lib/category-store";
 import { getAllProducts } from "@/lib/product-store";
 import { getSiteConfig } from "@/lib/site-config";
 
@@ -40,7 +41,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   const products = await getAllProducts();
   const articles = await getAllArticles();
-  const featuredProducts = products.filter((product) => product.featured);
+  const categories = await getAllCategories();
   const siteConfig = await getSiteConfig();
 
   return (
@@ -79,31 +80,13 @@ export default async function AdminPage() {
         </section>
         <section className="admin-grid">
           <div className="admin-panel" id="dashboard">
-            <h3>Hero Slider Scheduling</h3>
-            <p>Admins can manually select unlimited featured products, drag to reorder them, and schedule display dates.</p>
-            <div className="hero-sort-list">
-              {featuredProducts.map((product, index) => (
-                <div draggable key={product.slug}>
-                  <span>{index + 1}</span>
-                  <strong>{product.title}</strong>
-                  <small>
-                    <CalendarClock size={14} /> Through {product.expiration}
-                  </small>
-                </div>
-              ))}
-            </div>
+            <HeroSliderManager initialProducts={products} />
           </div>
           <div className="admin-panel" id="articles">
             <ArticleManager initialArticles={articles} />
           </div>
           <div className="admin-panel" id="categories">
-            <h3>Dynamic Categories</h3>
-            <p>Each category renders descriptions, latest products, related articles, and featured deals automatically.</p>
-            {categories.map((category) => (
-              <Link href={`/category/${category.slug}`} key={category.slug}>
-                {category.title}
-              </Link>
-            ))}
+            <CategoryManager initialCategories={categories} />
           </div>
           <div className="admin-panel" id="analytics">
             <h3>Analytics Settings</h3>

@@ -1,11 +1,4 @@
-export type CategorySlug =
-  | "top-deals"
-  | "walmart-deals"
-  | "home-kitchen"
-  | "electronics"
-  | "furniture"
-  | "fashion"
-  | "clearance-deals";
+export type CategorySlug = string;
 
 export type Store = {
   id: string;

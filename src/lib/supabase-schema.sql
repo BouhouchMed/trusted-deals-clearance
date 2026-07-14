@@ -31,6 +31,16 @@ create table if not exists products (
   updated_at timestamptz default now()
 );
 
+create table if not exists categories (
+  slug text primary key,
+  title text not null,
+  description text,
+  image text,
+  icon text default 'Sparkles',
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
 create table if not exists articles (
   slug text primary key,
   title text not null,
@@ -89,6 +99,7 @@ create table if not exists affiliate_clicks (
 create index if not exists products_slug_idx on products(slug);
 create index if not exists products_category_idx on products(category_slug);
 create index if not exists products_store_idx on products(store_id);
+create index if not exists categories_slug_idx on categories(slug);
 create index if not exists articles_slug_idx on articles(slug);
 create index if not exists articles_category_idx on articles(category_slug);
 create index if not exists affiliate_clicks_product_idx on affiliate_clicks(product_id);

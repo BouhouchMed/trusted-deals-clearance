@@ -6,8 +6,9 @@ import { CategoryIcon } from "@/components/category-icon";
 import { HeroSlider } from "@/components/hero-slider";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { ProductCard } from "@/components/product-card";
-import { categories, settings } from "@/lib/data";
+import { settings } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
+import { getAllCategories } from "@/lib/category-store";
 import { getAllProducts } from "@/lib/product-store";
 import { getSiteConfig } from "@/lib/site-config";
 
@@ -17,6 +18,7 @@ export default async function HomePage() {
   const siteConfig = await getSiteConfig();
   const products = await getAllProducts();
   const articles = await getAllArticles();
+  const categories = await getAllCategories();
   const home = siteConfig.homepage;
   const todaysDeals = products.filter((product) => product.published).slice(0, 6);
   const trending = products.filter((product) => product.trending);

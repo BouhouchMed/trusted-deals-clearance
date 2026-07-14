@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchTracker } from "@/components/analytics/search-tracker";
 import { ProductCard } from "@/components/product-card";
-import { categories, siteUrl } from "@/lib/data";
+import { siteUrl } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
+import { getAllCategories } from "@/lib/category-store";
 import { getAllProducts } from "@/lib/product-store";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ async function SearchContent({ searchParams }: { searchParams: Promise<{ q?: str
   const term = q.toLowerCase();
   const products = await getAllProducts();
   const articles = await getAllArticles();
+  const categories = await getAllCategories();
   const matchedProducts = products.filter((product) => `${product.title} ${product.brand} ${product.shortDescription}`.toLowerCase().includes(term));
   const matchedArticles = articles.filter((article) => `${article.title} ${article.excerpt} ${article.tags.join(" ")}`.toLowerCase().includes(term));
   const matchedCategories = categories.filter((category) => `${category.title} ${category.description}`.toLowerCase().includes(term));
