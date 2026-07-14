@@ -69,7 +69,9 @@ export function Header() {
             <input name="q" placeholder="Search deals" aria-label="Search deals" />
           </form>
           <span className="locale-badge" aria-label="United States English">
-            <span aria-hidden="true">🇺🇸</span>
+            <span className="us-flag" aria-hidden="true">
+              <span />
+            </span>
             <strong>EN</strong>
           </span>
           <Link className="nav-community-button" href={settings.facebookUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>
