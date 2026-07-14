@@ -68,16 +68,16 @@ export function Header() {
             <Search size={18} />
             <input name="q" placeholder="Search deals" aria-label="Search deals" />
           </form>
+          <Link className="nav-community-button" href={settings.facebookUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>
+            <Users size={17} />
+            <span>Join Our Facebook Community</span>
+          </Link>
           <span className="locale-badge" aria-label="United States English">
             <span className="us-flag" aria-hidden="true">
               <span />
             </span>
             <strong>EN</strong>
           </span>
-          <Link className="nav-community-button" href={settings.facebookUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>
-            <Users size={17} />
-            <span>Join Our Facebook Community</span>
-          </Link>
         </div>
       </div>
     </header>
