@@ -62,33 +62,82 @@ export default async function AdminPage() {
           </div>
           <CreateProductButton />
         </section>
-        <section className="admin-stats">
-          <Stat icon={<ShoppingBag />} label="Products" value={products.length} />
-          <Stat icon={<FolderTree />} label="Categories" value={categories.length} />
-          <Stat icon={<Store />} label="Stores" value={stores.length} />
-          <Stat icon={<Users />} label="Subscribers" value="8,420" />
-          <Stat icon={<BarChart3 />} label="Affiliate Clicks" value="12,940" />
-          <Stat icon={<Megaphone />} label="Hero Clicks" value="1,306" />
-          <Stat icon={<Users />} label="Community Clicks" value="842" />
-          <Stat icon={<MailIcon />} label="Newsletter Conversions" value="2,184" />
-        </section>
-        <section className="admin-panel" id="products">
-          <ProductManager initialProducts={products} />
-        </section>
-        <section className="admin-panel" id="site-builder">
-          <SiteBuilderForm initialConfig={siteConfig} />
-        </section>
-        <section className="admin-grid">
-          <div className="admin-panel" id="dashboard">
+        <div className="admin-pages">
+          <section className="admin-page-panel" id="dashboard">
+            <div className="admin-stats">
+              <Stat icon={<ShoppingBag />} label="Products" value={products.length} />
+              <Stat icon={<FolderTree />} label="Categories" value={categories.length} />
+              <Stat icon={<Store />} label="Stores" value={stores.length} />
+              <Stat icon={<Users />} label="Subscribers" value="8,420" />
+              <Stat icon={<BarChart3 />} label="Affiliate Clicks" value="12,940" />
+              <Stat icon={<Megaphone />} label="Hero Clicks" value="1,306" />
+              <Stat icon={<Users />} label="Community Clicks" value="842" />
+              <Stat icon={<MailIcon />} label="Newsletter Conversions" value="2,184" />
+            </div>
             <HeroSliderManager initialProducts={products} />
-          </div>
-          <div className="admin-panel" id="articles">
-            <ArticleManager initialArticles={articles} />
-          </div>
-          <div className="admin-panel" id="categories">
+          </section>
+
+          <section className="admin-page-panel" id="site-builder">
+            <SiteBuilderForm initialConfig={siteConfig} />
+          </section>
+
+          <section className="admin-page-panel" id="products">
+            <ProductManager initialProducts={products} />
+          </section>
+
+          <section className="admin-page-panel" id="categories">
             <CategoryManager initialCategories={categories} />
-          </div>
-          <div className="admin-panel" id="analytics">
+          </section>
+
+          <section className="admin-page-panel" id="stores">
+            <div className="admin-panel-heading">
+              <div>
+                <h3>Stores</h3>
+                <p>Review the affiliate stores used across product cards and filters.</p>
+              </div>
+            </div>
+            <div className="analytics-list">
+              {stores.map((store) => (
+                <span key={store.id}>
+                  {store.name} <strong>{store.url}</strong>
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <section className="admin-page-panel" id="articles">
+            <ArticleManager initialArticles={articles} />
+          </section>
+
+          <section className="admin-page-panel" id="media-library">
+            <div className="admin-panel-heading">
+              <div>
+                <h3>Media Library</h3>
+                <p>Keep hero images, category images, and product image URLs organized.</p>
+              </div>
+            </div>
+            <div className="analytics-list">
+              <span>Product images <strong>{products.length}</strong></span>
+              <span>Category hero images <strong>{categories.length}</strong></span>
+              <span>Article images <strong>{articles.length}</strong></span>
+            </div>
+          </section>
+
+          <section className="admin-page-panel" id="subscribers">
+            <div className="admin-panel-heading">
+              <div>
+                <h3>Subscribers</h3>
+                <p>Newsletter and deal alert subscribers will appear here when connected to Supabase.</p>
+              </div>
+            </div>
+            <div className="analytics-list">
+              <span>Total subscribers <strong>8,420</strong></span>
+              <span>Newsletter conversions <strong>2,184</strong></span>
+              <span>Community clicks <strong>842</strong></span>
+            </div>
+          </section>
+
+          <section className="admin-page-panel" id="analytics">
             <h3>Analytics Settings</h3>
             <p>Public settings can live in application settings. Secrets must stay in server-side environment variables.</p>
             <div className="settings-grid">
@@ -102,8 +151,7 @@ export default async function AdminPage() {
               <label>Meta Test Event Code<input placeholder="META_TEST_EVENT_CODE" /></label>
               <label>Conversions API Token<input placeholder="Stored only as META_CONVERSIONS_API_TOKEN" type="password" disabled /></label>
             </div>
-          </div>
-          <div className="admin-panel">
+            <hr className="admin-divider" />
             <h3>Retargeting Performance</h3>
             <div className="analytics-list">
               <span>Total affiliate clicks <strong>12,940</strong></span>
@@ -113,8 +161,23 @@ export default async function AdminPage() {
               <span>Top button location <strong>product_page</strong></span>
               <span>Top-performing article <strong>Clearance Shopping Checklist</strong></span>
             </div>
-          </div>
-        </section>
+          </section>
+
+          <section className="admin-page-panel" id="settings">
+            <div className="admin-panel-heading">
+              <div>
+                <h3>Settings</h3>
+                <p>Manage global defaults and environment-backed integrations.</p>
+              </div>
+            </div>
+            <div className="settings-grid">
+              <label>Default currency<input defaultValue="USD" /></label>
+              <label>Default locale<input defaultValue="en-US" /></label>
+              <label><input type="checkbox" defaultChecked /> Publish products by default</label>
+              <label><input type="checkbox" defaultChecked /> Show affiliate disclosure links</label>
+            </div>
+          </section>
+        </div>
       </div>
     </section>
   );
