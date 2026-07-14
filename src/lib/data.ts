@@ -3,20 +3,32 @@ import { Article, Category, Product, Store } from "./types";
 export const siteUrl = "https://trusteddealsclearance.com";
 
 export const stores: Store[] = [
-  { id: "walmart", name: "Walmart", logo: "W", url: "https://www.walmart.com" },
-  { id: "target", name: "Target", logo: "T", url: "https://www.target.com" },
-  { id: "amazon", name: "Amazon", logo: "A", url: "https://www.amazon.com" },
-  { id: "wayfair", name: "Wayfair", logo: "Wf", url: "https://www.wayfair.com" },
-  { id: "costco", name: "Costco", logo: "Co", url: "https://www.costco.com" },
-  { id: "home-depot", name: "Home Depot", logo: "HD", url: "https://www.homedepot.com" },
-  { id: "lowes", name: "Lowe's", logo: "Lo", url: "https://www.lowes.com" },
-  { id: "tjx", name: "TJX", logo: "TJ", url: "https://www.tjx.com" },
-  { id: "ross-stores", name: "Ross Stores", logo: "Rs", url: "https://www.rossstores.com" },
-  { id: "best-buy", name: "Best Buy", logo: "BB", url: "https://www.bestbuy.com" },
-  { id: "williams-sonoma", name: "Williams-Sonoma", logo: "WS", url: "https://www.williams-sonoma.com" },
-  { id: "hm", name: "H&M", logo: "HM", url: "https://www2.hm.com/en_us/index.html" },
-  { id: "burlington", name: "Burlington", logo: "Bu", url: "https://www.burlington.com" },
-  { id: "tractor-supply", name: "Tractor Supply", logo: "TS", url: "https://www.tractorsupply.com" }
+  { id: "walmart", name: "Walmart", logo: "W", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/WMT.webp", url: "https://www.walmart.com" },
+  { id: "target", name: "Target", logo: "T", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/TGT.webp", url: "https://www.target.com" },
+  { id: "amazon", name: "Amazon", logo: "A", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/AMZN.webp", url: "https://www.amazon.com" },
+  { id: "wayfair", name: "Wayfair", logo: "Wf", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/W.webp", url: "https://www.wayfair.com" },
+  { id: "costco", name: "Costco", logo: "Co", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/COST.webp", url: "https://www.costco.com" },
+  { id: "home-depot", name: "Home Depot", logo: "HD", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/HD.webp", url: "https://www.homedepot.com" },
+  { id: "lowes", name: "Lowe's", logo: "Lo", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/LOW.webp", url: "https://www.lowes.com" },
+  { id: "tjx", name: "TJX", logo: "TJ", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/TJX.webp", url: "https://www.tjx.com" },
+  { id: "ross-stores", name: "Ross Stores", logo: "Rs", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/ROST.webp", url: "https://www.rossstores.com" },
+  { id: "best-buy", name: "Best Buy", logo: "BB", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/BBY.webp", url: "https://www.bestbuy.com" },
+  {
+    id: "williams-sonoma",
+    name: "Williams-Sonoma",
+    logo: "WS",
+    logoUrl: "https://companiesmarketcap.com/img/company-logos/64/WSM.webp",
+    url: "https://www.williams-sonoma.com"
+  },
+  { id: "hm", name: "H&M", logo: "HM", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/HM-B.ST.webp", url: "https://www2.hm.com/en_us/index.html" },
+  { id: "burlington", name: "Burlington", logo: "Bu", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/BURL.webp", url: "https://www.burlington.com" },
+  {
+    id: "tractor-supply",
+    name: "Tractor Supply",
+    logo: "TS",
+    logoUrl: "https://companiesmarketcap.com/img/company-logos/64/TSCO.webp",
+    url: "https://www.tractorsupply.com"
+  }
 ];
 
 export const categories: Category[] = [

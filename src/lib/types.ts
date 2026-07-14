@@ -4,6 +4,7 @@ export type Store = {
   id: string;
   name: string;
   logo: string;
+  logoUrl?: string;
   url: string;
 };
 

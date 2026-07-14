@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { stores } from "@/lib/data";
 
@@ -14,7 +15,9 @@ export function PartnersSlider() {
         <div className="partners-track">
           {partners.map((store, index) => (
             <Link className="partner-logo-card" href={store.url} target="_blank" rel="noreferrer" key={`${store.id}-${index}`}>
-              <span>{store.logo}</span>
+              <span className="partner-logo-mark">
+                {store.logoUrl ? <Image src={store.logoUrl} alt="" width={28} height={28} /> : store.logo}
+              </span>
               <strong>{store.name}</strong>
             </Link>
           ))}
