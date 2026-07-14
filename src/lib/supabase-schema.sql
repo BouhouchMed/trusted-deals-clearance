@@ -101,6 +101,16 @@ create table if not exists affiliate_clicks (
   created_at timestamptz default now()
 );
 
+create table if not exists visitor_events (
+  id uuid primary key default gen_random_uuid(),
+  event_name text not null default 'PageView',
+  path text not null,
+  referrer text,
+  visitor_id text,
+  user_agent text,
+  created_at timestamptz default now()
+);
+
 create index if not exists products_slug_idx on products(slug);
 create index if not exists products_category_idx on products(category_slug);
 create index if not exists products_store_idx on products(store_id);
@@ -111,3 +121,7 @@ create index if not exists affiliate_clicks_product_idx on affiliate_clicks(prod
 create index if not exists affiliate_clicks_category_idx on affiliate_clicks(category_id);
 create index if not exists affiliate_clicks_store_idx on affiliate_clicks(store_id);
 create index if not exists affiliate_clicks_created_idx on affiliate_clicks(created_at);
+create index if not exists visitor_events_name_idx on visitor_events(event_name);
+create index if not exists visitor_events_path_idx on visitor_events(path);
+create index if not exists visitor_events_visitor_idx on visitor_events(visitor_id);
+create index if not exists visitor_events_created_idx on visitor_events(created_at);

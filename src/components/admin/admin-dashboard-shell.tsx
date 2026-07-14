@@ -21,6 +21,7 @@ import { CreateProductButton } from "@/components/admin/create-product-button";
 import { HeroSliderManager } from "@/components/admin/hero-slider-manager";
 import { ProductManager } from "@/components/admin/product-manager";
 import { SiteBuilderForm } from "@/components/admin/site-builder-form";
+import { AnalyticsSummary } from "@/lib/analytics-store";
 import { SiteConfig } from "@/lib/site-config";
 import { Article, Category, Product } from "@/lib/types";
 
@@ -39,13 +40,14 @@ const adminNav = [
 type AdminPageId = (typeof adminNav)[number]["id"];
 
 type Props = {
+  analytics: AnalyticsSummary;
   articles: Article[];
   categories: Category[];
   products: Product[];
   siteConfig: SiteConfig;
 };
 
-export function AdminDashboardShell({ articles, categories, products, siteConfig }: Props) {
+export function AdminDashboardShell({ analytics, articles, categories, products, siteConfig }: Props) {
   const [activePage, setActivePage] = useState<AdminPageId>("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -103,11 +105,12 @@ export function AdminDashboardShell({ articles, categories, products, siteConfig
             <div className="admin-stats">
               <Stat icon={<ShoppingBag />} label="Products" value={products.length} />
               <Stat icon={<FolderTree />} label="Categories" value={categories.length} />
-              <Stat icon={<Users />} label="Subscribers" value="8,420" />
-              <Stat icon={<BarChart3 />} label="Affiliate Clicks" value="12,940" />
+              <Stat icon={<Users />} label="Visitors" value={analytics.uniqueVisitors} />
+              <Stat icon={<BarChart3 />} label="Page Views" value={analytics.pageViews} />
+              <Stat icon={<BarChart3 />} label="Affiliate Clicks" value={analytics.affiliateClicks} />
               <Stat icon={<Megaphone />} label="Hero Clicks" value="1,306" />
-              <Stat icon={<Users />} label="Community Clicks" value="842" />
-              <Stat icon={<Users />} label="Newsletter Conversions" value="2,184" />
+              <Stat icon={<Users />} label="Community Clicks" value={analytics.communityClicks} />
+              <Stat icon={<Users />} label="Newsletter Conversions" value={analytics.newsletterConversions} />
             </div>
             <div className="admin-section-grid">
               {adminNav
@@ -160,9 +163,9 @@ export function AdminDashboardShell({ articles, categories, products, siteConfig
               </div>
             </div>
             <div className="analytics-list">
-              <span>Total subscribers <strong>8,420</strong></span>
-              <span>Newsletter conversions <strong>2,184</strong></span>
-              <span>Community clicks <strong>842</strong></span>
+              <span>Total visitors <strong>{analytics.uniqueVisitors}</strong></span>
+              <span>Newsletter conversions <strong>{analytics.newsletterConversions}</strong></span>
+              <span>Community clicks <strong>{analytics.communityClicks}</strong></span>
             </div>
           </AdminPagePanel>
 
@@ -183,12 +186,13 @@ export function AdminDashboardShell({ articles, categories, products, siteConfig
             <hr className="admin-divider" />
             <h3>Retargeting Performance</h3>
             <div className="analytics-list">
-              <span>Total affiliate clicks <strong>12,940</strong></span>
-              <span>Clicks by product <strong>Ninja Air Fryer</strong></span>
-              <span>Clicks by category <strong>Home & Kitchen</strong></span>
-              <span>Clicks by store <strong>Walmart</strong></span>
+              <span>Total page views <strong>{analytics.pageViews}</strong></span>
+              <span>Unique visitors <strong>{analytics.uniqueVisitors}</strong></span>
+              <span>Total affiliate clicks <strong>{analytics.affiliateClicks}</strong></span>
+              <span>Top page <strong>{analytics.topPage}</strong></span>
+              <span>Top store <strong>{analytics.topStore}</strong></span>
               <span>Top button location <strong>product_page</strong></span>
-              <span>Top-performing article <strong>Clearance Shopping Checklist</strong></span>
+              <span>Last updated <strong>{analytics.lastUpdated.slice(0, 16).replace("T", " ")}</strong></span>
             </div>
           </AdminPagePanel>
 

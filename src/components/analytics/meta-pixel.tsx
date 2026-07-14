@@ -6,10 +6,13 @@ import { Suspense, useEffect, useState } from "react";
 import {
   COOKIE_CONSENT_EVENT,
   canUseMetaPixel,
+  getCookieConsent,
   hasValidPixelId,
   initializeMetaPixel,
   pageView
 } from "@/lib/meta-pixel";
+
+const recordedPageViews = new Set<string>();
 
 export function MetaPixel() {
   return (
@@ -33,10 +36,15 @@ function MetaPixelInner() {
   }, []);
 
   useEffect(() => {
-    if (!allowed || !pathname || pathname.startsWith("/admin")) return;
-    initializeMetaPixel();
     const query = searchParams.toString();
-    pageView(query ? `${pathname}?${query}` : pathname);
+    const currentPath = query ? `${pathname}?${query}` : pathname;
+    if (!pathname || pathname.startsWith("/admin")) return;
+
+    if (getCookieConsent().analytics) recordVisitorPageView(currentPath);
+
+    if (!allowed) return;
+    initializeMetaPixel();
+    pageView(currentPath);
   }, [allowed, pathname, searchParams]);
 
   if (!pixelId || !hasValidPixelId() || !allowed) return null;
@@ -55,4 +63,30 @@ function MetaPixelInner() {
       `}
     </Script>
   );
+}
+
+function getVisitorId() {
+  const key = "tdc_visitor_id";
+  const existing = window.localStorage.getItem(key);
+  if (existing) return existing;
+  const nextId = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  window.localStorage.setItem(key, nextId);
+  return nextId;
+}
+
+function recordVisitorPageView(path: string) {
+  if (recordedPageViews.has(path)) return;
+  recordedPageViews.add(path);
+
+  fetch("/api/analytics/visitor-event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      eventName: "PageView",
+      path,
+      referrer: document.referrer,
+      visitorId: getVisitorId()
+    }),
+    keepalive: true
+  }).catch(() => undefined);
 }
