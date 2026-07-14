@@ -7,17 +7,20 @@ import { Product } from "@/lib/types";
 export function HeroSliderManager({ initialProducts }: { initialProducts: Product[] }) {
   const [products, setProducts] = useState(initialProducts);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [error, setError] = useState("");
   const featuredProducts = products.filter((product) => product.featured);
 
   async function toggleHero(product: Product) {
     setStatus("saving");
+    setError("");
     const response = await fetch(`/api/admin/products/${product.slug}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "feature" })
     });
-    const result = (await response.json().catch(() => ({}))) as { product?: Product };
+    const result = (await response.json().catch(() => ({}))) as { product?: Product; error?: string };
     if (!response.ok || !result.product) {
+      setError(result.error ?? "Could not update hero slider.");
       setStatus("error");
       return;
     }
@@ -35,7 +38,7 @@ export function HeroSliderManager({ initialProducts }: { initialProducts: Produc
       </div>
       <div className="builder-status" aria-live="polite">
         {status === "saved" ? "Hero slider updated." : null}
-        {status === "error" ? "Could not update hero slider." : null}
+        {status === "error" ? error || "Could not update hero slider." : null}
       </div>
       <div className="hero-sort-list">
         {featuredProducts.map((product, index) => (

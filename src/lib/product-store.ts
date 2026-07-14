@@ -120,8 +120,17 @@ export async function featureProduct(slug: string) {
   const allProducts = await getAllProducts();
   const product = allProducts.find((item) => item.slug === slug);
   if (!product) throw new Error("Product not found.");
-  await updateProductOverride(slug, { featured: !product.featured });
-  return { ...product, featured: !product.featured };
+
+  const updated = { ...product, featured: !product.featured };
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("products").upsert(mapProductToRow(updated), { onConflict: "slug" });
+    if (error) throw new Error(error.message);
+    return updated;
+  }
+
+  await updateProductOverride(slug, { featured: updated.featured });
+  return updated;
 }
 
 export async function duplicateProduct(slug: string) {
