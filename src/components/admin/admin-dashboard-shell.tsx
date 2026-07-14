@@ -6,6 +6,7 @@ import {
   FolderTree,
   ImageIcon,
   LayoutDashboard,
+  LogOut,
   Megaphone,
   PanelLeftClose,
   PanelLeftOpen,
@@ -49,6 +50,7 @@ type Props = {
 export function AdminDashboardShell({ analytics, articles, categories, products, siteConfig }: Props) {
   const [activePage, setActivePage] = useState<AdminPageId>("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -68,6 +70,12 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
 
   function toggleSidebar() {
     setSidebarCollapsed((current) => !current);
+  }
+
+  async function logout() {
+    setLoggingOut(true);
+    await fetch("/api/admin/auth/logout", { method: "POST" }).catch(() => null);
+    window.location.reload();
   }
 
   const activeLabel = adminNav.find((item) => item.id === activePage)?.label ?? "Dashboard";
@@ -96,6 +104,10 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
             <span className="eyebrow">Trusted Deals & Clearance</span>
             <h2>{activeLabel}</h2>
           </div>
+          <button className="admin-logout-button" type="button" onClick={logout} disabled={loggingOut}>
+            <LogOut size={18} />
+            <span>{loggingOut ? "Signing out..." : "Logout"}</span>
+          </button>
         </section>
 
         <div className="admin-pages">

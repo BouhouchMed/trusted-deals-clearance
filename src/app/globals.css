@@ -1345,6 +1345,31 @@ textarea {
   font-size: 3rem;
 }
 
+.admin-logout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid rgba(164, 38, 38, 0.18);
+  border-radius: 999px;
+  background: #fff0f0;
+  padding: 0 18px;
+  color: #a42626;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-logout-button:hover {
+  background: #ffe4e4;
+}
+
+.admin-logout-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .admin-stats {
   grid-template-columns: repeat(4, 1fr);
   margin-bottom: 24px;
