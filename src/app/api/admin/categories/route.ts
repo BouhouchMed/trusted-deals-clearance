@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { saveCategory } from "@/lib/category-store";
 
 export async function POST(request: NextRequest) {
+  const unauthorized = requireAdminApiAuth(request);
+  if (unauthorized) return unauthorized;
+
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Invalid category payload." }, { status: 400 });

@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { settings } from "@/lib/data";
 import { getAdminProducts, saveAdminProduct } from "@/lib/product-store";
 import { CategorySlug } from "@/lib/types";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const unauthorized = requireAdminApiAuth(request);
+  if (unauthorized) return unauthorized;
+
   return NextResponse.json(await getAdminProducts());
 }
 
 export async function POST(request: NextRequest) {
+  const unauthorized = requireAdminApiAuth(request);
+  if (unauthorized) return unauthorized;
+
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Invalid product payload" }, { status: 400 });

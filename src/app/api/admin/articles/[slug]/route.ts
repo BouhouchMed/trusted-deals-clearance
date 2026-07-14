@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { deleteArticle, updateArticle } from "@/lib/article-store";
 import { CategorySlug } from "@/lib/types";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function PATCH(request: NextRequest, { params }: Props) {
+  const unauthorized = requireAdminApiAuth(request);
+  if (unauthorized) return unauthorized;
+
   const { slug } = await params;
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
@@ -33,6 +37,9 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: Props) {
+  const unauthorized = requireAdminApiAuth(_request);
+  if (unauthorized) return unauthorized;
+
   const { slug } = await params;
 
   try {

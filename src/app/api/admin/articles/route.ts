@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdminApiAuth } from "@/lib/admin-auth";
 import { saveAdminArticle } from "@/lib/article-store";
 import { CategorySlug } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
+  const unauthorized = requireAdminApiAuth(request);
+  if (unauthorized) return unauthorized;
+
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") {
     return NextResponse.json({ error: "Invalid article payload" }, { status: 400 });
