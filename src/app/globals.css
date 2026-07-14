@@ -953,16 +953,25 @@ textarea {
   font-size: 1.8rem;
 }
 
-.admin-sidebar a {
+.admin-sidebar a,
+.admin-sidebar button {
   display: flex;
   gap: 10px;
   align-items: center;
+  width: 100%;
+  border: 0;
   border-radius: 12px;
+  background: transparent;
   padding: 12px;
   color: rgba(255, 255, 255, 0.78);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.admin-sidebar a:hover {
+.admin-sidebar a:hover,
+.admin-sidebar button:hover,
+.admin-sidebar button.active {
   background: rgba(255, 255, 255, 0.08);
   color: white;
 }
@@ -1020,21 +1029,33 @@ textarea {
 }
 
 .admin-page-panel {
-  display: none;
+  display: grid;
   gap: 18px;
   padding: 24px;
 }
 
-.admin-page-panel:first-child {
-  display: grid;
-}
-
-.admin-pages:has(.admin-page-panel:target) .admin-page-panel {
+.admin-page-panel[hidden] {
   display: none;
 }
 
-.admin-pages .admin-page-panel:target {
+.admin-section-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.admin-section-grid button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--navy);
+  padding: 0 14px;
+  font-weight: 850;
+  cursor: pointer;
 }
 
 .admin-divider {
