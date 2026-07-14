@@ -1802,16 +1802,22 @@ textarea {
     grid-column: 1 / -1;
     order: 4;
     width: 100%;
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
   }
 
   .search-form {
-    width: 100%;
+    flex: 1 1 180px;
+    width: auto;
+    min-height: 38px;
   }
 
   .nav-community-button {
-    width: 100%;
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 38px;
+    padding: 0 12px;
   }
 
   .hero-slider,
@@ -1862,13 +1868,23 @@ textarea {
   }
 
   .nav-actions {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .search-form {
-    width: min(100%, 220px);
+    flex: 1 1 auto;
+    width: auto;
     min-height: 36px;
     padding: 0 10px;
+  }
+
+  .nav-community-button {
+    min-width: 42px;
+    padding: 0 11px;
+  }
+
+  .nav-community-button span {
+    display: none;
   }
 
   .search-form svg {
@@ -1963,6 +1979,6 @@ textarea {
   }
 
   .search-form {
-    width: min(100%, 188px);
+    min-height: 34px;
   }
 }
