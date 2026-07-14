@@ -7,6 +7,8 @@ import {
   ImageIcon,
   LayoutDashboard,
   Megaphone,
+  PanelLeftClose,
+  PanelLeftOpen,
   Radio,
   Settings,
   ShoppingBag,
@@ -45,6 +47,7 @@ type Props = {
 
 export function AdminDashboardShell({ articles, categories, products, siteConfig }: Props) {
   const [activePage, setActivePage] = useState<AdminPageId>("dashboard");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -62,15 +65,27 @@ export function AdminDashboardShell({ articles, categories, products, siteConfig
     window.history.replaceState(null, "", `#${pageId}`);
   }
 
+  function toggleSidebar() {
+    setSidebarCollapsed((current) => !current);
+  }
+
   const activeLabel = adminNav.find((item) => item.id === activePage)?.label ?? "Dashboard";
 
   return (
-    <section className="admin-shell">
+    <section className={`admin-shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
       <aside className="admin-sidebar">
-        <h1>Admin Panel</h1>
+        <div className="admin-sidebar-header">
+          <h1>
+            <span className="admin-sidebar-mark">TD</span>
+            <span className="admin-sidebar-title">Admin Panel</span>
+          </h1>
+          <button className="admin-sidebar-toggle" type="button" onClick={toggleSidebar} aria-label={sidebarCollapsed ? "Show menu labels" : "Hide menu labels"}>
+            {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          </button>
+        </div>
         {adminNav.map(({ id, label, icon: Icon }) => (
-          <button className={activePage === id ? "active" : ""} type="button" onClick={() => openPage(id)} key={id}>
-            <Icon size={18} /> {label}
+          <button className={activePage === id ? "active" : ""} type="button" onClick={() => openPage(id)} title={label} key={id}>
+            <Icon size={18} /> <span className="admin-nav-label">{label}</span>
           </button>
         ))}
       </aside>

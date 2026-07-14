@@ -935,6 +935,11 @@ textarea {
   display: grid;
   grid-template-columns: 270px 1fr;
   min-height: calc(100vh - 80px);
+  transition: grid-template-columns 180ms ease;
+}
+
+.admin-shell.sidebar-collapsed {
+  grid-template-columns: 88px 1fr;
 }
 
 .admin-sidebar {
@@ -948,9 +953,73 @@ textarea {
   padding: 28px;
 }
 
-.admin-sidebar h1 {
+.admin-sidebar-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 22px;
+}
+
+.admin-sidebar h1 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
   font-size: 1.8rem;
+}
+
+.admin-sidebar-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.admin-sidebar-title,
+.admin-nav-label {
+  white-space: nowrap;
+  transition: opacity 160ms ease, width 160ms ease;
+}
+
+.admin-sidebar-toggle {
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar {
+  padding: 24px 14px;
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar-header {
+  justify-content: center;
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar h1 {
+  display: none;
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar-toggle {
+  width: 44px;
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar button:not(.admin-sidebar-toggle) {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.admin-shell.sidebar-collapsed .admin-nav-label {
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
 }
 
 .admin-sidebar a,
@@ -974,6 +1043,19 @@ textarea {
 .admin-sidebar button.active {
   background: rgba(255, 255, 255, 0.08);
   color: white;
+}
+
+.admin-sidebar .admin-sidebar-toggle {
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0;
+}
+
+.admin-shell.sidebar-collapsed .admin-sidebar .admin-sidebar-toggle {
+  width: 44px;
+  min-width: 44px;
 }
 
 .admin-main {
