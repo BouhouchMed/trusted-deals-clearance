@@ -37,6 +37,7 @@ create table if not exists categories (
   description text,
   image text,
   icon text default 'Sparkles',
+  is_deleted boolean default false,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -51,9 +52,13 @@ create table if not exists articles (
   author text,
   published_at date default current_date,
   tags text[] default '{}',
+  is_deleted boolean default false,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
+
+alter table categories add column if not exists is_deleted boolean default false;
+alter table articles add column if not exists is_deleted boolean default false;
 
 create table if not exists subscribers (
   id uuid primary key default gen_random_uuid(),

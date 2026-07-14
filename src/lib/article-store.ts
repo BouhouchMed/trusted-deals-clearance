@@ -6,6 +6,8 @@ import { Article, CategorySlug } from "@/lib/types";
 
 const adminArticlesPath = path.join(process.cwd(), "src", "lib", "admin-articles.json");
 
+type StoredArticle = Article & { isDeleted?: boolean };
+
 export type ArticleInput = {
   title: string;
   slug?: string;
@@ -18,6 +20,11 @@ export type ArticleInput = {
 };
 
 export async function getAdminArticles(): Promise<Article[]> {
+  const storedArticles = await getStoredArticles();
+  return storedArticles.filter((article) => !article.isDeleted).map(({ isDeleted: _isDeleted, ...article }) => article);
+}
+
+async function getStoredArticles(): Promise<StoredArticle[]> {
   const supabase = getSupabaseAdmin();
   if (supabase) {
     const { data, error } = await supabase.from("articles").select("*").order("published_at", { ascending: false });
@@ -26,16 +33,18 @@ export async function getAdminArticles(): Promise<Article[]> {
 
   try {
     const raw = await readFile(adminArticlesPath, "utf8");
-    return JSON.parse(raw) as Article[];
+    return JSON.parse(raw) as StoredArticle[];
   } catch {
     return [];
   }
 }
 
 export async function getAllArticles(): Promise<Article[]> {
-  const adminArticles = await getAdminArticles();
+  const storedArticles = await getStoredArticles();
+  const deletedSlugs = new Set(storedArticles.filter((article) => article.isDeleted).map((article) => article.slug));
+  const adminArticles = storedArticles.filter((article) => !article.isDeleted).map(({ isDeleted: _isDeleted, ...article }) => article);
   const adminSlugs = new Set(adminArticles.map((article) => article.slug));
-  return [...adminArticles, ...seedArticles.filter((article) => !adminSlugs.has(article.slug))];
+  return [...adminArticles, ...seedArticles.filter((article) => !deletedSlugs.has(article.slug) && !adminSlugs.has(article.slug))];
 }
 
 export async function getArticleBySlug(slug: string) {
@@ -44,7 +53,7 @@ export async function getArticleBySlug(slug: string) {
 }
 
 export async function saveAdminArticle(input: ArticleInput) {
-  const adminArticles = await getAdminArticles();
+  const storedArticles = await getStoredArticles();
   const allArticles = await getAllArticles();
   const slug = normalizeSlug(input.slug || input.title);
 
@@ -66,17 +75,17 @@ export async function saveAdminArticle(input: ArticleInput) {
 
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { error } = await supabase.from("articles").insert(mapArticleToRow(article));
+    const { error } = await supabase.from("articles").upsert({ ...mapArticleToRow(article), is_deleted: false }, { onConflict: "slug" });
     if (error) throw new Error(error.message);
     return article;
   }
 
-  await writeFile(adminArticlesPath, `${JSON.stringify([article, ...adminArticles], null, 2)}\n`, "utf8");
+  await writeFile(adminArticlesPath, `${JSON.stringify([article, ...storedArticles.filter((item) => item.slug !== slug)], null, 2)}\n`, "utf8");
   return article;
 }
 
 export async function updateArticle(slug: string, input: ArticleInput) {
-  const adminArticles = await getAdminArticles();
+  const storedArticles = await getStoredArticles();
   const allArticles = await getAllArticles();
   const existing = allArticles.find((article) => article.slug === slug);
   if (!existing) throw new Error("Article not found.");
@@ -100,14 +109,15 @@ export async function updateArticle(slug: string, input: ArticleInput) {
 
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { error } = await supabase.from("articles").upsert(mapArticleToRow(updated), { onConflict: "slug" });
+    const { error } = await supabase.from("articles").upsert({ ...mapArticleToRow(updated), is_deleted: false }, { onConflict: "slug" });
     if (error) throw new Error(error.message);
     return updated;
   }
 
-  const index = adminArticles.findIndex((article) => article.slug === slug);
+  const adminArticles = storedArticles.filter((article) => !article.isDeleted);
+  const index = storedArticles.findIndex((article) => article.slug === slug);
   if (index >= 0) {
-    const nextArticles = [...adminArticles];
+    const nextArticles = [...storedArticles];
     nextArticles[index] = updated;
     await writeFile(adminArticlesPath, `${JSON.stringify(nextArticles, null, 2)}\n`, "utf8");
   } else {
@@ -115,6 +125,32 @@ export async function updateArticle(slug: string, input: ArticleInput) {
   }
 
   return updated;
+}
+
+export async function deleteArticle(slug: string) {
+  const allArticles = await getAllArticles();
+  const existing = allArticles.find((article) => article.slug === slug);
+  if (!existing) throw new Error("Article not found.");
+
+  const isSeedArticle = seedArticles.some((article) => article.slug === slug);
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    if (isSeedArticle) {
+      const { error } = await supabase.from("articles").upsert({ ...mapArticleToRow(existing), is_deleted: true }, { onConflict: "slug" });
+      if (error) throw new Error(error.message);
+      return;
+    }
+
+    const { error } = await supabase.from("articles").delete().eq("slug", slug);
+    if (error) throw new Error(error.message);
+    return;
+  }
+
+  const storedArticles = await getStoredArticles();
+  const nextArticles = isSeedArticle
+    ? [{ ...existing, isDeleted: true }, ...storedArticles.filter((article) => article.slug !== slug)]
+    : storedArticles.filter((article) => article.slug !== slug);
+  await writeFile(adminArticlesPath, `${JSON.stringify(nextArticles, null, 2)}\n`, "utf8");
 }
 
 function normalizeSlug(value: string) {
@@ -135,9 +171,10 @@ type ArticleRow = {
   author: string | null;
   published_at: string | null;
   tags: string[] | null;
+  is_deleted?: boolean | null;
 };
 
-function mapArticleRow(row: ArticleRow): Article {
+function mapArticleRow(row: ArticleRow): StoredArticle {
   return {
     slug: row.slug,
     title: row.title,
@@ -147,7 +184,8 @@ function mapArticleRow(row: ArticleRow): Article {
     image: row.image ?? "",
     author: row.author ?? "Trusted Deals Editors",
     publishedAt: row.published_at ?? new Date().toISOString().slice(0, 10),
-    tags: row.tags ?? []
+    tags: row.tags ?? [],
+    isDeleted: Boolean(row.is_deleted)
   };
 }
 

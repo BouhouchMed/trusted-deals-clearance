@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Save } from "lucide-react";
+import { Pencil, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Category } from "@/lib/types";
 
@@ -8,6 +8,7 @@ export function CategoryManager({ initialCategories }: { initialCategories: Cate
   const [categories, setCategories] = useState(initialCategories);
   const [draft, setDraft] = useState<Category>(initialCategories[0]);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
 
   function update<Key extends keyof Category>(key: Key, value: Category[Key]) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -29,6 +30,25 @@ export function CategoryManager({ initialCategories }: { initialCategories: Cate
     setStatus("saved");
   }
 
+  async function deleteCategory(slug: string) {
+    setDeletingSlug(slug);
+    const response = await fetch(`/api/admin/categories/${slug}`, { method: "DELETE" });
+
+    if (!response.ok) {
+      setStatus("error");
+      setDeletingSlug(null);
+      return;
+    }
+
+    setCategories((current) => {
+      const nextCategories = current.filter((category) => category.slug !== slug);
+      setDraft(nextCategories[0] ?? { slug: "", title: "", description: "", image: "", icon: "Sparkles" });
+      return nextCategories;
+    });
+    setStatus("saved");
+    setDeletingSlug(null);
+  }
+
   return (
     <>
       <div className="admin-panel-heading">
@@ -36,13 +56,13 @@ export function CategoryManager({ initialCategories }: { initialCategories: Cate
           <h3>Dynamic Categories</h3>
           <p>Edit category titles, descriptions, icons, and hero images.</p>
         </div>
-        <button className="button" type="button" onClick={save}>
+        <button className="button" type="button" onClick={save} disabled={!draft.slug || status === "saving"}>
           <Save size={18} /> Save Category
         </button>
       </div>
       <div className="builder-status" aria-live="polite">
-        {status === "saved" ? "Category saved." : null}
-        {status === "error" ? "Could not save category." : null}
+        {status === "saved" ? "Category changes saved." : null}
+        {status === "error" ? "Could not save category changes." : null}
       </div>
       <div className="category-manager-grid">
         <div className="analytics-list">
@@ -51,6 +71,9 @@ export function CategoryManager({ initialCategories }: { initialCategories: Cate
               {category.title}
               <button className="inline-edit-button" type="button" onClick={() => setDraft(category)}>
                 <Pencil size={14} /> Edit
+              </button>
+              <button className="inline-edit-button danger" type="button" onClick={() => deleteCategory(category.slug)} disabled={deletingSlug === category.slug}>
+                <Trash2 size={14} /> {deletingSlug === category.slug ? "Deleting..." : "Delete"}
               </button>
             </span>
           ))}

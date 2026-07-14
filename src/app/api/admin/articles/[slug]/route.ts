@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateArticle } from "@/lib/article-store";
+import { deleteArticle, updateArticle } from "@/lib/article-store";
 import { CategorySlug } from "@/lib/types";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -29,5 +29,16 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     return NextResponse.json({ ok: true, article });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update article." }, { status: 400 });
+  }
+}
+
+export async function DELETE(_request: NextRequest, { params }: Props) {
+  const { slug } = await params;
+
+  try {
+    await deleteArticle(slug);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Could not delete article." }, { status: 400 });
   }
 }

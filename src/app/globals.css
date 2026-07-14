@@ -1227,6 +1227,16 @@ textarea {
   cursor: pointer;
 }
 
+.inline-edit-button.danger {
+  border-color: rgba(185, 28, 28, 0.22);
+  color: #b91c1c;
+}
+
+.inline-edit-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .site-builder {
   display: grid;
   gap: 18px;

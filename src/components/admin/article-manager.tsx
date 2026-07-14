@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { categories } from "@/lib/data";
 import { Article } from "@/lib/types";
@@ -21,6 +21,7 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
   const [open, setOpen] = useState(false);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   function update(key: keyof typeof emptyDraft, value: string) {
@@ -76,6 +77,24 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
     setStatus("saved");
   }
 
+  async function deleteArticle(slug: string) {
+    setDeletingSlug(slug);
+    setError("");
+    const response = await fetch(`/api/admin/articles/${slug}`, { method: "DELETE" });
+
+    if (!response.ok) {
+      const result = (await response.json().catch(() => ({}))) as { error?: string };
+      setStatus("error");
+      setError(result.error ?? "Could not delete article.");
+      setDeletingSlug(null);
+      return;
+    }
+
+    setArticles((current) => current.filter((article) => article.slug !== slug));
+    setStatus("saved");
+    setDeletingSlug(null);
+  }
+
   return (
     <>
       <div className="admin-panel-heading">
@@ -88,7 +107,7 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
         </button>
       </div>
       <div className="builder-status" aria-live="polite">
-        {status === "saved" ? "Article created. It is now available in the blog after refresh." : null}
+        {status === "saved" ? "Article changes saved. Refresh the blog to see the latest list." : null}
         {status === "error" ? error : null}
       </div>
       <div className="analytics-list">
@@ -97,6 +116,9 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
             {article.title} <strong>{article.categorySlug}</strong>
             <button className="inline-edit-button" type="button" onClick={() => openEditForm(article)}>
               <Pencil size={14} /> Edit
+            </button>
+            <button className="inline-edit-button danger" type="button" onClick={() => deleteArticle(article.slug)} disabled={deletingSlug === article.slug}>
+              <Trash2 size={14} /> {deletingSlug === article.slug ? "Deleting..." : "Delete"}
             </button>
           </span>
         ))}
