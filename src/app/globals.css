@@ -1861,6 +1861,25 @@ textarea {
     max-height: 42px;
   }
 
+  .nav-actions {
+    align-items: flex-start;
+  }
+
+  .search-form {
+    width: min(100%, 220px);
+    min-height: 36px;
+    padding: 0 10px;
+  }
+
+  .search-form svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .search-form input {
+    font-size: 0.84rem;
+  }
+
   .hero-content {
     padding-inline: 24px;
     min-height: 430px;
@@ -1941,5 +1960,9 @@ textarea {
   .site-logo {
     width: 136px;
     max-height: 38px;
+  }
+
+  .search-form {
+    width: min(100%, 188px);
   }
 }
