@@ -1126,10 +1126,10 @@ textarea {
 }
 
 .admin-sidebar-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px;
   gap: 10px;
   align-items: center;
-  justify-content: space-between;
   margin-bottom: 22px;
 }
 
@@ -1138,7 +1138,10 @@ textarea {
   gap: 10px;
   align-items: center;
   min-width: 0;
-  font-size: 1.8rem;
+  margin: 0;
+  overflow: hidden;
+  font-size: 1.45rem;
+  line-height: 1.1;
 }
 
 .admin-sidebar-mark {
@@ -1159,7 +1162,14 @@ textarea {
   transition: opacity 160ms ease, width 160ms ease;
 }
 
+.admin-sidebar-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .admin-sidebar-toggle {
+  flex: 0 0 38px;
   justify-content: center;
   width: 38px;
   min-width: 38px;
@@ -1167,12 +1177,17 @@ textarea {
   padding: 0;
 }
 
+.admin-sidebar-toggle svg {
+  flex: 0 0 auto;
+}
+
 .admin-shell.sidebar-collapsed .admin-sidebar {
   padding: 24px 14px;
 }
 
 .admin-shell.sidebar-collapsed .admin-sidebar-header {
-  justify-content: center;
+  grid-template-columns: 1fr;
+  justify-items: center;
 }
 
 .admin-shell.sidebar-collapsed .admin-sidebar h1 {
