@@ -10,7 +10,6 @@ import {
   Radio,
   Settings,
   ShoppingBag,
-  Store as StoreIcon,
   Users
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -21,14 +20,13 @@ import { HeroSliderManager } from "@/components/admin/hero-slider-manager";
 import { ProductManager } from "@/components/admin/product-manager";
 import { SiteBuilderForm } from "@/components/admin/site-builder-form";
 import { SiteConfig } from "@/lib/site-config";
-import { Article, Category, Product, Store } from "@/lib/types";
+import { Article, Category, Product } from "@/lib/types";
 
 const adminNav = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "site-builder", label: "Site Builder", icon: Settings },
   { id: "products", label: "Products", icon: ShoppingBag },
   { id: "categories", label: "Categories", icon: FolderTree },
-  { id: "stores", label: "Stores", icon: StoreIcon },
   { id: "articles", label: "Articles", icon: FileText },
   { id: "media-library", label: "Media Library", icon: ImageIcon },
   { id: "subscribers", label: "Subscribers", icon: Users },
@@ -43,10 +41,9 @@ type Props = {
   categories: Category[];
   products: Product[];
   siteConfig: SiteConfig;
-  stores: Store[];
 };
 
-export function AdminDashboardShell({ articles, categories, products, siteConfig, stores }: Props) {
+export function AdminDashboardShell({ articles, categories, products, siteConfig }: Props) {
   const [activePage, setActivePage] = useState<AdminPageId>("dashboard");
 
   useEffect(() => {
@@ -91,7 +88,6 @@ export function AdminDashboardShell({ articles, categories, products, siteConfig
             <div className="admin-stats">
               <Stat icon={<ShoppingBag />} label="Products" value={products.length} />
               <Stat icon={<FolderTree />} label="Categories" value={categories.length} />
-              <Stat icon={<StoreIcon />} label="Stores" value={stores.length} />
               <Stat icon={<Users />} label="Subscribers" value="8,420" />
               <Stat icon={<BarChart3 />} label="Affiliate Clicks" value="12,940" />
               <Stat icon={<Megaphone />} label="Hero Clicks" value="1,306" />
@@ -121,22 +117,6 @@ export function AdminDashboardShell({ articles, categories, products, siteConfig
 
           <AdminPagePanel id="categories" activePage={activePage}>
             <CategoryManager initialCategories={categories} />
-          </AdminPagePanel>
-
-          <AdminPagePanel id="stores" activePage={activePage}>
-            <div className="admin-panel-heading">
-              <div>
-                <h3>Stores</h3>
-                <p>Review the affiliate stores used across product cards and filters.</p>
-              </div>
-            </div>
-            <div className="analytics-list">
-              {stores.map((store) => (
-                <span key={store.id}>
-                  {store.name} <strong>{store.url}</strong>
-                </span>
-              ))}
-            </div>
           </AdminPagePanel>
 
           <AdminPagePanel id="articles" activePage={activePage}>

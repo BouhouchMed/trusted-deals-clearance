@@ -1,7 +1,6 @@
 import { AdminDashboardShell } from "@/components/admin/admin-dashboard-shell";
 import { getAllArticles } from "@/lib/article-store";
 import { getAllCategories } from "@/lib/category-store";
-import { stores } from "@/lib/data";
 import { getAllProducts } from "@/lib/product-store";
 import { getSiteConfig } from "@/lib/site-config";
 
@@ -13,5 +12,5 @@ export default async function AdminPage() {
   const categories = await getAllCategories();
   const siteConfig = await getSiteConfig();
 
-  return <AdminDashboardShell articles={articles} categories={categories} products={products} siteConfig={siteConfig} stores={stores} />;
+  return <AdminDashboardShell articles={articles} categories={categories} products={products} siteConfig={siteConfig} />;
 }
