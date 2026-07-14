@@ -17,7 +17,6 @@ import {
 import { useEffect, useState } from "react";
 import { ArticleManager } from "@/components/admin/article-manager";
 import { CategoryManager } from "@/components/admin/category-manager";
-import { CreateProductButton } from "@/components/admin/create-product-button";
 import { HeroSliderManager } from "@/components/admin/hero-slider-manager";
 import { ProductManager } from "@/components/admin/product-manager";
 import { SiteBuilderForm } from "@/components/admin/site-builder-form";
@@ -97,7 +96,6 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
             <span className="eyebrow">Trusted Deals & Clearance</span>
             <h2>{activeLabel}</h2>
           </div>
-          <CreateProductButton />
         </section>
 
         <div className="admin-pages">
