@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { getAllArticles, getArticleBySlug } from "@/lib/article-store";
 import { formatDate, getCategory, siteUrl } from "@/lib/data";
 import { getAllProducts } from "@/lib/product-store";
+import { getRelatedProducts } from "@/lib/related-products";
 import { articleJsonLd, breadcrumbsJsonLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -48,7 +49,7 @@ export default async function ArticlePage({ params }: Props) {
   if (!article) notFound();
   const category = getCategory(article.categorySlug);
   const products = await getAllProducts();
-  const relatedProducts = products.filter((product) => product.categorySlug === article.categorySlug).slice(0, 3);
+  const relatedProducts = getRelatedProducts(products, { categorySlug: article.categorySlug, limit: 3 });
   const jsonLd = [
     articleJsonLd(article, category),
     breadcrumbsJsonLd([

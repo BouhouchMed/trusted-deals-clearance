@@ -8,6 +8,7 @@ import { ProductViewTracker } from "@/components/analytics/product-view-tracker"
 import { ProductCard } from "@/components/product-card";
 import { articles, currency, formatDate, getCategory, getDiscount, getStore, settings, siteUrl } from "@/lib/data";
 import { getAllProducts, getProductBySlug } from "@/lib/product-store";
+import { getRelatedProducts } from "@/lib/related-products";
 import { breadcrumbsJsonLd, productJsonLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -47,7 +48,7 @@ export default async function ProductPage({ params }: Props) {
   const products = await getAllProducts();
   const store = getStore(product.storeId);
   const category = getCategory(product.categorySlug);
-  const relatedProducts = products.filter((item) => item.categorySlug === product.categorySlug && item.slug !== product.slug).slice(0, 3);
+  const relatedProducts = getRelatedProducts(products, { categorySlug: product.categorySlug, excludeSlug: product.slug, limit: 3 });
   const relatedArticles = articles.filter((article) => article.categorySlug === product.categorySlug || article.productSlug === product.slug);
   const discount = getDiscount(product);
   const savings = Math.max(product.regularPrice - product.salePrice, 0);
