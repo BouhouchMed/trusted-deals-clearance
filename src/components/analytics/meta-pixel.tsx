@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   COOKIE_CONSENT_EVENT,
+  DEFAULT_META_PIXEL_ID,
   canUseMetaPixel,
   getCookieConsent,
   hasValidPixelId,
@@ -26,7 +27,7 @@ function MetaPixelInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [allowed, setAllowed] = useState(false);
-  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || DEFAULT_META_PIXEL_ID;
   const currentPath = useMemo(() => {
     const query = searchParams.toString();
     return query ? `${pathname}?${query}` : pathname;

@@ -36,7 +36,9 @@ declare global {
 export const COOKIE_CONSENT_KEY = "tdc_cookie_preferences";
 export const COOKIE_CONSENT_EVENT = "tdc-cookie-consent-change";
 
-const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+export const DEFAULT_META_PIXEL_ID = "898963533504103";
+
+const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || DEFAULT_META_PIXEL_ID;
 const enableInDev = process.env.NEXT_PUBLIC_ENABLE_META_PIXEL_IN_DEV === "true";
 const consentRequired = process.env.NEXT_PUBLIC_ENABLE_MARKETING_COOKIE_CONSENT !== "false";
 const enableServerEvents = process.env.NEXT_PUBLIC_ENABLE_META_CONVERSIONS_API === "true";
