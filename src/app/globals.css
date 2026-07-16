@@ -936,6 +936,61 @@ textarea {
   color: var(--muted);
 }
 
+.product-marketing-note {
+  border-left: 4px solid var(--gold);
+  margin: 18px 0;
+  background: rgba(170, 141, 109, 0.1);
+  padding: 12px 14px;
+  color: var(--navy);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.offer-box {
+  display: grid;
+  gap: 14px;
+  margin: 22px 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fffaf4;
+  padding: 20px;
+}
+
+.offer-box h2 {
+  font-size: 1.5rem;
+}
+
+.offer-box p {
+  color: var(--muted);
+}
+
+.offer-box dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0;
+}
+
+.offer-box dl div {
+  border-radius: 12px;
+  background: white;
+  padding: 14px;
+}
+
+.offer-box dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.offer-box dd {
+  margin: 5px 0 0;
+  color: var(--navy);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
 .price-panel {
   display: flex;
   flex-wrap: wrap;
@@ -985,6 +1040,14 @@ textarea {
   margin-top: 18px;
   padding-left: 14px;
   color: var(--muted);
+}
+
+.deal-disclaimer {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .details-grid {
@@ -2002,6 +2065,10 @@ textarea {
     width: auto;
     min-height: 42px;
     padding: 0 14px;
+  }
+
+  .offer-box dl {
+    grid-template-columns: 1fr;
   }
 
   .hero-slider,

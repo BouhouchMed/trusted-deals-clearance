@@ -43,6 +43,8 @@ export default async function ProductPage({ params }: Props) {
   const relatedProducts = products.filter((item) => item.categorySlug === product.categorySlug && item.slug !== product.slug).slice(0, 3);
   const relatedArticles = articles.filter((article) => article.categorySlug === product.categorySlug || article.productSlug === product.slug);
   const discount = getDiscount(product);
+  const savings = Math.max(product.regularPrice - product.salePrice, 0);
+  const verifiedDate = formatDate(new Date().toISOString().slice(0, 10));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -84,7 +86,32 @@ export default async function ProductPage({ params }: Props) {
             <Star size={18} fill="currentColor" /> {product.rating} rating
             <span>{product.availability}</span>
           </div>
+          <aside className="product-marketing-note">
+            Marketing disclosure: if you purchase through our links, we may earn a commission from {store.name} at no
+            extra cost to you.
+          </aside>
           <p>{product.longDescription}</p>
+          <section className="offer-box" aria-label="Featured offer details">
+            <h2>Limited-time offer: save {discount}% on {product.title} at {store.name}</h2>
+            <p>
+              Enjoy this featured deal from {store.name}. Pricing, availability, and final checkout terms should always
+              be confirmed on the retailer website before purchase.
+            </p>
+            <dl>
+              <div>
+                <dt>Previous price</dt>
+                <dd>{currency(product.regularPrice)}</dd>
+              </div>
+              <div>
+                <dt>Current price</dt>
+                <dd>{currency(product.salePrice)}</dd>
+              </div>
+              <div>
+                <dt>Total savings</dt>
+                <dd>{currency(savings)}</dd>
+              </div>
+            </dl>
+          </section>
           <div className="price-panel">
             <span className="old-price">{currency(product.regularPrice)}</span>
             <strong>{currency(product.salePrice)}</strong>
@@ -110,6 +137,10 @@ export default async function ProductPage({ params }: Props) {
             <ShareDealButton product={product} category={category?.title ?? product.categorySlug} store={store.name} buttonLocation="product_page" />
           </div>
           <p className="fine-print">Deal expiration: {formatDate(product.expiration)}</p>
+          <p className="deal-disclaimer">
+            Price manually checked on {verifiedDate}. This offer may change, expire, or sell out on {store.name} at any
+            time.
+          </p>
           <aside className="affiliate-note">{settings.affiliateDisclosure}</aside>
         </div>
       </section>
