@@ -49,7 +49,7 @@ const consentRequired = process.env.NEXT_PUBLIC_ENABLE_MARKETING_COOKIE_CONSENT 
 const enableAdvancedMatching = process.env.NEXT_PUBLIC_ENABLE_META_ADVANCED_MATCHING !== "false";
 const enableServerEvents = process.env.NEXT_PUBLIC_ENABLE_META_CONVERSIONS_API === "true";
 const initialized = { current: false };
-const firedEvents = new Set<string>();
+const firedEvents = new Set<string>(["PageView:/"]);
 const advancedMatching = { email: "" };
 
 export function hasValidPixelId() {
@@ -84,7 +84,7 @@ export function setCookieConsent(preferences: CookieConsentPreferences) {
 export function initializeMetaPixel() {
   if (!canUseMetaPixel() || initialized.current || !pixelId) return;
   if (!window.fbq) return;
-  window.fbq("init", pixelId, getAdvancedMatchingPayload());
+  if (advancedMatching.email) window.fbq("init", pixelId, getAdvancedMatchingPayload());
   initialized.current = true;
   devLog("Meta Pixel initialized", { pixelId });
 }

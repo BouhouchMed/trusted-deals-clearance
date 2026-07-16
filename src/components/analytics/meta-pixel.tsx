@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   COOKIE_CONSENT_EVENT,
   DEFAULT_META_PIXEL_ID,
@@ -27,6 +27,7 @@ function MetaPixelInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [allowed, setAllowed] = useState(false);
+  const firstPixelPageViewHandled = useRef(false);
   const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || DEFAULT_META_PIXEL_ID;
   const currentPath = useMemo(() => {
     const query = searchParams.toString();
@@ -47,6 +48,10 @@ function MetaPixelInner() {
 
     if (!allowed) return;
     initializeMetaPixel();
+    if (!firstPixelPageViewHandled.current) {
+      firstPixelPageViewHandled.current = true;
+      return;
+    }
     pageView(currentPath);
   }, [allowed, currentPath, pathname]);
 
@@ -59,7 +64,6 @@ function MetaPixelInner() {
         strategy="afterInteractive"
         onReady={() => {
           initializeMetaPixel();
-          if (currentPath && !currentPath.startsWith("/admin")) pageView(currentPath);
         }}
       >
         {`
@@ -71,6 +75,8 @@ function MetaPixelInner() {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '${pixelId}');
+          fbq('track', 'PageView');
         `}
       </Script>
       <noscript>
