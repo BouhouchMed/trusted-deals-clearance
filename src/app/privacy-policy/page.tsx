@@ -8,9 +8,23 @@ export default function PrivacyPolicyPage() {
         improve the site experience. We use standard analytics and affiliate tracking technologies.
       </p>
       <p>
+        This website uses cookies and similar technologies to keep the site working, remember cookie preferences,
+        measure traffic, understand visitor engagement, and track affiliate link performance.
+      </p>
+      <p>
+        Some outbound links are affiliate tracking links provided by third-party retailers and affiliate networks,
+        including Walmart and Impact Radius/Impact. These links may place or read cookies, tracking IDs, click IDs, or
+        similar identifiers so purchases can be attributed correctly and commissions can be calculated when you buy from
+        the retailer.
+      </p>
+      <p>
+        When you click an affiliate link, you may be redirected to a third-party retailer or affiliate network before
+        reaching the final store page. Those third parties process data according to their own privacy policies, cookie
+        notices, and tracking practices.
+      </p>
+      <p>
         With your permission, we may use Meta Pixel and similar technologies to measure website activity, understand
-        visitor engagement, create advertising audiences, show relevant Facebook and Instagram advertisements, and
-        measure campaign performance.
+        visitor engagement, create advertising audiences, and measure campaign performance.
       </p>
       <p>
         If you reject marketing cookies, Meta Pixel marketing events are not initialized for your visit. You can update
