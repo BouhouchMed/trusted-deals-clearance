@@ -74,7 +74,8 @@ export function setCookieConsent(preferences: CookieConsentPreferences) {
 
 export function initializeMetaPixel() {
   if (!canUseMetaPixel() || initialized.current || !pixelId) return;
-  window.fbq?.("init", pixelId);
+  if (!window.fbq) return;
+  window.fbq("init", pixelId);
   initialized.current = true;
   devLog("Meta Pixel initialized", { pixelId });
 }

@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   COOKIE_CONSENT_EVENT,
   canUseMetaPixel,
@@ -27,6 +27,10 @@ function MetaPixelInner() {
   const searchParams = useSearchParams();
   const [allowed, setAllowed] = useState(false);
   const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const currentPath = useMemo(() => {
+    const query = searchParams.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     const refresh = () => setAllowed(canUseMetaPixel());
@@ -36,8 +40,6 @@ function MetaPixelInner() {
   }, []);
 
   useEffect(() => {
-    const query = searchParams.toString();
-    const currentPath = query ? `${pathname}?${query}` : pathname;
     if (!pathname || pathname.startsWith("/admin")) return;
 
     if (getCookieConsent().analytics) recordVisitorPageView(currentPath);
@@ -45,23 +47,42 @@ function MetaPixelInner() {
     if (!allowed) return;
     initializeMetaPixel();
     pageView(currentPath);
-  }, [allowed, pathname, searchParams]);
+  }, [allowed, currentPath, pathname]);
 
   if (!pixelId || !hasValidPixelId() || !allowed) return null;
 
   return (
-    <Script id="meta-pixel" strategy="afterInteractive">
-      {`
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-      `}
-    </Script>
+    <>
+      <Script
+        id="meta-pixel"
+        strategy="afterInteractive"
+        onReady={() => {
+          initializeMetaPixel();
+          if (currentPath && !currentPath.startsWith("/admin")) pageView(currentPath);
+        }}
+      >
+        {`
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+        `}
+      </Script>
+      <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          alt=""
+          height="1"
+          width="1"
+          style={{ display: "none" }}
+          src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+        />
+      </noscript>
+    </>
   );
 }
 
