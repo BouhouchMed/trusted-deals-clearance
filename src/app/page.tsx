@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Mail } from "lucide-react";
@@ -7,13 +8,21 @@ import { HeroSlider } from "@/components/hero-slider";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { PartnersSlider } from "@/components/partners-slider";
 import { ProductCard } from "@/components/product-card";
-import { settings } from "@/lib/data";
+import { settings, siteUrl } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
 import { getAllCategories } from "@/lib/category-store";
 import { getAllProducts } from "@/lib/product-store";
+import { itemListJsonLd } from "@/lib/seo";
 import { getSiteConfig } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Walmart Deals, Clearance Finds & Daily Shopping Offers",
+  description:
+    "Find current Walmart deals, clearance markdowns, home deals, electronics offers, furniture savings, fashion discounts, and practical shopping guides for US shoppers.",
+  alternates: { canonical: siteUrl }
+};
 
 export default async function HomePage() {
   const siteConfig = await getSiteConfig();
@@ -23,9 +32,18 @@ export default async function HomePage() {
   const home = siteConfig.homepage;
   const todaysDeals = products.filter((product) => product.published).slice(0, 6);
   const trending = products.filter((product) => product.trending);
+  const jsonLd = itemListJsonLd(
+    "Featured Daily Deals",
+    todaysDeals.map((product) => ({
+      name: product.title,
+      url: `${siteUrl}/products/${product.slug}`,
+      image: product.image
+    }))
+  );
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {home.showHero ? <HeroSlider products={products} /> : null}
       {home.showCategories ? (
         <section className="section">

@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { getAllArticles, getArticleBySlug } from "@/lib/article-store";
 import { formatDate, getCategory, siteUrl } from "@/lib/data";
 import { getAllProducts } from "@/lib/product-store";
+import { articleJsonLd, breadcrumbsJsonLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -22,7 +23,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: article.title,
     description: article.excerpt,
     alternates: { canonical: `${siteUrl}/blog/${article.slug}` },
-    openGraph: { title: article.title, description: article.excerpt, images: [article.image], type: "article" }
+    openGraph: {
+      title: article.title,
+      description: article.excerpt,
+      url: `${siteUrl}/blog/${article.slug}`,
+      images: [article.image],
+      type: "article",
+      publishedTime: article.publishedAt,
+      authors: [article.author],
+      tags: article.tags
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt,
+      images: [article.image]
+    }
   };
 }
 
@@ -33,9 +49,18 @@ export default async function ArticlePage({ params }: Props) {
   const category = getCategory(article.categorySlug);
   const products = await getAllProducts();
   const relatedProducts = products.filter((product) => product.categorySlug === article.categorySlug).slice(0, 3);
+  const jsonLd = [
+    articleJsonLd(article, category),
+    breadcrumbsJsonLd([
+      { name: "Home", url: siteUrl },
+      { name: "Blog", url: `${siteUrl}/blog` },
+      { name: article.title, url: `${siteUrl}/blog/${article.slug}` }
+    ])
+  ];
 
   return (
     <article className="article-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="article-hero">
         <Image src={article.image} alt={article.title} fill priority sizes="100vw" />
         <div>

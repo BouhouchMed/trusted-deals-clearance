@@ -10,7 +10,8 @@ import { getAllProducts } from "@/lib/product-store";
 export const metadata: Metadata = {
   title: "Search Deals",
   description: "Search products, articles, categories, Walmart deals, electronics offers, and clearance finds.",
-  alternates: { canonical: `${siteUrl}/search` }
+  alternates: { canonical: `${siteUrl}/search` },
+  robots: { index: false, follow: true }
 };
 
 export default function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {

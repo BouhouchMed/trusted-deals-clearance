@@ -7,6 +7,7 @@ import { getDiscount, siteUrl } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
 import { getAllCategories, getCategoryBySlug } from "@/lib/category-store";
 import { getAllProducts } from "@/lib/product-store";
+import { breadcrumbsJsonLd, itemListJsonLd } from "@/lib/seo";
 import { Product } from "@/lib/types";
 
 type Props = {
@@ -26,7 +27,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${category.title} Deals`,
     description: category.description,
-    alternates: { canonical: `${siteUrl}/category/${category.slug}` }
+    alternates: { canonical: `${siteUrl}/category/${category.slug}` },
+    openGraph: {
+      title: `${category.title} Deals`,
+      description: category.description,
+      url: `${siteUrl}/category/${category.slug}`,
+      images: [category.image],
+      type: "website"
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category.title} Deals`,
+      description: category.description,
+      images: [category.image]
+    }
   };
 }
 
@@ -42,9 +56,24 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     filters
   );
   const latestArticles = allArticles.filter((article) => article.categorySlug === category.slug);
+  const jsonLd = [
+    breadcrumbsJsonLd([
+      { name: "Home", url: siteUrl },
+      { name: category.title, url: `${siteUrl}/category/${category.slug}` }
+    ]),
+    itemListJsonLd(
+      `${category.title} Deals`,
+      categoryProducts.slice(0, 20).map((product) => ({
+        name: product.title,
+        url: `${siteUrl}/products/${product.slug}`,
+        image: product.image
+      }))
+    )
+  ];
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="category-hero">
         <Image src={category.image} alt="" fill priority sizes="100vw" />
         <div>

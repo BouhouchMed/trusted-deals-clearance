@@ -8,6 +8,7 @@ import { ProductViewTracker } from "@/components/analytics/product-view-tracker"
 import { ProductCard } from "@/components/product-card";
 import { articles, currency, formatDate, getCategory, getDiscount, getStore, settings, siteUrl } from "@/lib/data";
 import { getAllProducts, getProductBySlug } from "@/lib/product-store";
+import { breadcrumbsJsonLd, productJsonLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -29,6 +30,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: product.seoDescription,
       images: [product.image],
       type: "article"
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.seoTitle,
+      description: product.seoDescription,
+      images: [product.image]
     }
   };
 }
@@ -46,23 +53,14 @@ export default async function ProductPage({ params }: Props) {
   const savings = Math.max(product.regularPrice - product.salePrice, 0);
   const verifiedDate = formatDate(new Date().toISOString().slice(0, 10));
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.title,
-    image: product.gallery,
-    description: product.shortDescription,
-    brand: product.brand,
-    aggregateRating: { "@type": "AggregateRating", ratingValue: product.rating, reviewCount: 128 },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "USD",
-      price: product.salePrice,
-      availability: product.availability === "Expired" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-      url: `${siteUrl}/products/${product.slug}`,
-      priceValidUntil: product.expiration
-    }
-  };
+  const jsonLd = [
+    productJsonLd(product, store),
+    breadcrumbsJsonLd([
+      { name: "Home", url: siteUrl },
+      { name: category?.title ?? product.categorySlug, url: `${siteUrl}/category/${category?.slug ?? product.categorySlug}` },
+      { name: product.title, url: `${siteUrl}/products/${product.slug}` }
+    ])
+  ];
 
   return (
     <article className="product-page">

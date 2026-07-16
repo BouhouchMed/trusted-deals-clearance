@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { siteUrl } from "@/lib/data";
 import { getAllArticles } from "@/lib/article-store";
+import { itemListJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Shopping Guides, Reviews & Seasonal Deals",
@@ -14,8 +15,18 @@ export const dynamic = "force-dynamic";
 
 export default async function BlogPage() {
   const articles = await getAllArticles();
+  const jsonLd = itemListJsonLd(
+    "Shopping Guides & Product Reviews",
+    articles.map((article) => ({
+      name: article.title,
+      url: `${siteUrl}/blog/${article.slug}`,
+      image: article.image
+    }))
+  );
+
   return (
     <section className="section">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="section-heading">
         <span className="eyebrow">The Deal Desk</span>
         <h1>Shopping Guides & Product Reviews</h1>

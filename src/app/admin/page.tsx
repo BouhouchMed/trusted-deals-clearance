@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { AdminLogin } from "@/components/admin/admin-login";
 import { AdminDashboardShell } from "@/components/admin/admin-dashboard-shell";
 import { createCaptchaChallenge, isAdminAuthenticated } from "@/lib/admin-auth";
@@ -8,6 +9,11 @@ import { getAllProducts } from "@/lib/product-store";
 import { getSiteConfig } from "@/lib/site-config";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: { index: false, follow: false }
+};
 
 export default async function AdminPage() {
   if (!(await isAdminAuthenticated())) {
