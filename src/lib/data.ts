@@ -1,6 +1,6 @@
 import { Article, Category, Product, Store } from "./types";
 
-export const siteUrl = "https://trusteddealsclearance.com";
+export const siteUrl = "https://trusteddeals.us";
 
 export const stores: Store[] = [
   { id: "walmart", name: "Walmart", logo: "W", logoUrl: "https://companiesmarketcap.com/img/company-logos/64/WMT.webp", url: "https://www.walmart.com" },
