@@ -28,7 +28,12 @@ export type DealEventPayload = ProductEventPayload & {
 
 declare global {
   interface Window {
-    fbq?: (action: "init" | "track" | "trackCustom", eventName: string, params?: EventPayload, options?: { eventID?: string }) => void;
+    fbq?: (
+      action: "init" | "track" | "trackCustom",
+      eventName: string,
+      params?: EventPayload,
+      options?: { eventID?: string }
+    ) => void;
     _fbq?: unknown;
   }
 }
@@ -41,9 +46,11 @@ export const DEFAULT_META_PIXEL_ID = "898963533504103";
 const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || DEFAULT_META_PIXEL_ID;
 const enableInDev = process.env.NEXT_PUBLIC_ENABLE_META_PIXEL_IN_DEV === "true";
 const consentRequired = process.env.NEXT_PUBLIC_ENABLE_MARKETING_COOKIE_CONSENT !== "false";
+const enableAdvancedMatching = process.env.NEXT_PUBLIC_ENABLE_META_ADVANCED_MATCHING !== "false";
 const enableServerEvents = process.env.NEXT_PUBLIC_ENABLE_META_CONVERSIONS_API === "true";
 const initialized = { current: false };
 const firedEvents = new Set<string>();
+const advancedMatching = { email: "" };
 
 export function hasValidPixelId() {
   return Boolean(pixelId && /^[0-9]{6,30}$/.test(pixelId));
@@ -77,9 +84,20 @@ export function setCookieConsent(preferences: CookieConsentPreferences) {
 export function initializeMetaPixel() {
   if (!canUseMetaPixel() || initialized.current || !pixelId) return;
   if (!window.fbq) return;
-  window.fbq("init", pixelId);
+  window.fbq("init", pixelId, getAdvancedMatchingPayload());
   initialized.current = true;
   devLog("Meta Pixel initialized", { pixelId });
+}
+
+export function setAdvancedMatchingEmail(email: string) {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail || !enableAdvancedMatching || !canUseMetaPixel()) return;
+
+  advancedMatching.email = normalizedEmail;
+
+  if (initialized.current && pixelId && window.fbq) {
+    window.fbq("init", pixelId, getAdvancedMatchingPayload());
+  }
 }
 
 export function createEventId(eventName: string) {
@@ -294,4 +312,13 @@ export function trackCustomEvent(eventName: string, payload: EventPayload = {}) 
 
 function devLog(message: string, payload?: unknown) {
   if (process.env.NODE_ENV === "development") console.info(`[analytics] ${message}`, payload);
+}
+
+function normalizeEmail(email: string) {
+  return email.trim().toLowerCase();
+}
+
+function getAdvancedMatchingPayload() {
+  if (!enableAdvancedMatching || !advancedMatching.email) return undefined;
+  return { em: advancedMatching.email };
 }

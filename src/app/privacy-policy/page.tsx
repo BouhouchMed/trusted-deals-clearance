@@ -26,6 +26,11 @@ export default function PrivacyPolicyPage() {
         With your permission, we may use Meta Pixel and similar technologies to measure website activity, understand
         visitor engagement, create advertising audiences, and measure campaign performance.
       </p>
+      <p>
+        If you submit information such as an email address through a newsletter or contact form, we may use Meta
+        advanced matching to help attribute website events and advertising performance. This matching is used for
+        measurement and remarketing purposes and is handled by Meta according to its own business tools terms.
+      </p>
     </section>
   );
 }
