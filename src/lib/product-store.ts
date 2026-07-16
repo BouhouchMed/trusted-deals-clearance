@@ -56,7 +56,7 @@ export async function getAllProducts(): Promise<Product[]> {
   const visibleAdminProducts = adminProducts
     .filter((product) => !state.hiddenSlugs.includes(product.slug))
     .map((product) => ({ ...product, ...state.overrides[product.slug] }));
-  return [...visibleAdminProducts, ...visibleSeedProducts];
+  return [...visibleAdminProducts, ...visibleSeedProducts].map(applyAffiliateUrlFixes);
 }
 
 export async function getProductBySlug(slug: string) {
@@ -285,6 +285,17 @@ function normalizeSlug(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function applyAffiliateUrlFixes(product: Product): Product {
+  if (
+    product.slug === "better-homes-gardens-patio-set" &&
+    product.affiliateUrl === "https://www.walmart.com/search?q=Better%20Homes%20Gardens%204%20Piece%20Patio%20Set"
+  ) {
+    return { ...product, affiliateUrl: "https://fashlyst.com/r/6FVZMGOK29A8" };
+  }
+
+  return product;
 }
 
 type ProductRow = {

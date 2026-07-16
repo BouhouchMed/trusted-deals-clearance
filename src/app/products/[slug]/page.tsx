@@ -105,9 +105,7 @@ export default async function ProductPage({ params }: Props) {
               category={category?.title ?? product.categorySlug}
               store={store.name}
               buttonLocation="product_page"
-            >
-              View Deal
-            </TrackedDealLink>
+            />
             <WishlistButton product={product} category={category?.title ?? product.categorySlug} store={store.name} buttonLocation="product_page" />
             <ShareDealButton product={product} category={category?.title ?? product.categorySlug} store={store.name} buttonLocation="product_page" />
           </div>

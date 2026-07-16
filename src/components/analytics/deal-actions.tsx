@@ -43,9 +43,13 @@ export function TrackedDealLink({ product, category, store, buttonLocation, clas
         trackAffiliateClick(payload);
       }}
     >
-      {children ?? "View Deal"}
+      {children ?? `Check price on ${formatRetailerName(store)}.com`}
     </Link>
   );
+}
+
+function formatRetailerName(store: string) {
+  return store.replace(/\.com$/i, "");
 }
 
 export function CouponCopyButton({ product, category, store, couponCode }: DealActionProps & { couponCode: string }) {

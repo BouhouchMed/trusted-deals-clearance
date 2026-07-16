@@ -160,7 +160,7 @@ export const products: Product[] = [
     regularPrice: 399,
     salePrice: 249,
     rating: 4.5,
-    affiliateUrl: "https://www.walmart.com/search?q=Better%20Homes%20Gardens%204%20Piece%20Patio%20Set",
+    affiliateUrl: "https://fashlyst.com/r/6FVZMGOK29A8",
     affiliateNetwork: "walmart",
     availability: "In Stock",
     expiration: "2026-08-05",
@@ -305,6 +305,8 @@ export const settings = {
   approvedAffiliateDomains: [
     "www.walmart.com",
     "walmart.com",
+    "fashlyst.com",
+    "www.fashlyst.com",
     "www.target.com",
     "target.com",
     "www.amazon.com",
