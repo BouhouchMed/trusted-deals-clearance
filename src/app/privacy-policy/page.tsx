@@ -26,10 +26,6 @@ export default function PrivacyPolicyPage() {
         With your permission, we may use Meta Pixel and similar technologies to measure website activity, understand
         visitor engagement, create advertising audiences, and measure campaign performance.
       </p>
-      <p>
-        If you reject marketing cookies, Meta Pixel marketing events are not initialized for your visit. You can update
-        or withdraw cookie preferences at any time through the Cookie Preferences link in the footer.
-      </p>
     </section>
   );
 }
