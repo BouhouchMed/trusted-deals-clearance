@@ -30,7 +30,7 @@ export async function createAffiliateLink(input: { destinationUrl: string; title
   const links = await getStoredLinks();
   const hostname = new URL(destinationUrl).hostname.replace(/^www\./, "");
   const title = input.title?.trim() || hostname;
-  const slug = await createUniqueSlug(title, links);
+  const slug = createUniqueCodeSlug(links);
   const link: AffiliateLink = {
     createdAt: new Date().toISOString(),
     destinationUrl,
@@ -55,20 +55,17 @@ function normalizeDestinationUrl(value: string) {
   return url.toString();
 }
 
-async function createUniqueSlug(title: string, links: AffiliateLink[]) {
+function createUniqueCodeSlug(links: AffiliateLink[]) {
   const existing = new Set(links.map((link) => link.slug));
-  const base = normalizeSlug(title) || "affiliate-link";
-  let slug = `${base}-${randomBytes(3).toString("hex")}`;
-  while (existing.has(slug)) slug = `${base}-${randomBytes(3).toString("hex")}`;
+  let slug = createRandomCode();
+  while (existing.has(slug)) slug = createRandomCode();
   return slug;
 }
 
-function normalizeSlug(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+function createRandomCode(length = 13) {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const bytes = randomBytes(length);
+  return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("");
 }
 
 function getLocalUrl(slug: string) {
