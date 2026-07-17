@@ -1737,6 +1737,80 @@ textarea {
   font-weight: 850;
 }
 
+.redirect-page {
+  align-items: center;
+  background:
+    radial-gradient(circle at top left, rgba(28, 93, 153, 0.16), transparent 28rem),
+    linear-gradient(135deg, #f7fafc 0%, #eef4f8 100%);
+  display: flex;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.redirect-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(20, 43, 67, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 24px 60px rgba(20, 43, 67, 0.14);
+  margin: 0 auto;
+  max-width: 460px;
+  padding: 36px;
+  text-align: center;
+  width: 100%;
+}
+
+.redirect-icon {
+  align-items: center;
+  background: #e8f7ef;
+  border: 1px solid rgba(21, 128, 61, 0.18);
+  border-radius: 999px;
+  color: #15803d;
+  display: inline-flex;
+  height: 66px;
+  justify-content: center;
+  margin-bottom: 18px;
+  width: 66px;
+}
+
+.redirect-kicker {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+.redirect-card h1 {
+  color: var(--navy);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.redirect-progress {
+  background: #dbe6ee;
+  border-radius: 999px;
+  height: 8px;
+  margin: 26px 0;
+  overflow: hidden;
+}
+
+.redirect-progress span {
+  animation: redirect-progress 2.4s ease-in-out forwards;
+  background: linear-gradient(90deg, #15803d, #2f80ed);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  width: 0;
+}
+
+@keyframes redirect-progress {
+  to {
+    width: 100%;
+  }
+}
+
 .settings-grid label {
   display: grid;
   gap: 8px;
