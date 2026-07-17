@@ -3,6 +3,7 @@ import { AdminLogin } from "@/components/admin/admin-login";
 import { AdminDashboardShell } from "@/components/admin/admin-dashboard-shell";
 import { createCaptchaChallenge, isAdminAuthenticated } from "@/lib/admin-auth";
 import { getSecondaryAdminSettings } from "@/lib/admin-users-store";
+import { getAffiliateLinks } from "@/lib/affiliate-link-store";
 import { getAnalyticsSummary } from "@/lib/analytics-store";
 import { getAllArticles } from "@/lib/article-store";
 import { getAllCategories } from "@/lib/category-store";
@@ -28,9 +29,11 @@ export default async function AdminPage() {
   const siteConfig = await getSiteConfig();
   const analytics = await getAnalyticsSummary();
   const secondaryAdmin = await getSecondaryAdminSettings();
+  const affiliateLinks = await getAffiliateLinks();
 
   return (
     <AdminDashboardShell
+      affiliateLinks={affiliateLinks}
       analytics={analytics}
       articles={articles}
       categories={categories}

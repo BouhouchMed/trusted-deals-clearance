@@ -6,6 +6,7 @@ import {
   FolderTree,
   ImageIcon,
   LayoutDashboard,
+  Link2,
   LogOut,
   Megaphone,
   PanelLeftClose,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AdminUserSettings } from "@/components/admin/admin-user-settings";
+import { AffiliateLinkManager } from "@/components/admin/affiliate-link-manager";
 import { ArticleManager } from "@/components/admin/article-manager";
 import { CategoryManager } from "@/components/admin/category-manager";
 import { HeroSliderManager } from "@/components/admin/hero-slider-manager";
@@ -24,12 +26,14 @@ import { SiteBuilderForm } from "@/components/admin/site-builder-form";
 import { AnalyticsSummary } from "@/lib/analytics-store";
 import { SiteConfig } from "@/lib/site-config";
 import { Article, Category, Product } from "@/lib/types";
+import type { AffiliateLink } from "@/lib/affiliate-link-store";
 import type { SecondaryAdminSettings } from "@/lib/admin-users-store";
 
 const adminNav = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "site-builder", label: "Site Builder", icon: Settings },
   { id: "products", label: "Products", icon: ShoppingBag },
+  { id: "affiliate-links", label: "Affiliate Links", icon: Link2 },
   { id: "categories", label: "Categories", icon: FolderTree },
   { id: "articles", label: "Articles", icon: FileText },
   { id: "media-library", label: "Media Library", icon: ImageIcon },
@@ -40,6 +44,7 @@ const adminNav = [
 type AdminPageId = (typeof adminNav)[number]["id"];
 
 type Props = {
+  affiliateLinks: AffiliateLink[];
   analytics: AnalyticsSummary;
   articles: Article[];
   categories: Category[];
@@ -48,7 +53,7 @@ type Props = {
   siteConfig: SiteConfig;
 };
 
-export function AdminDashboardShell({ analytics, articles, categories, products, secondaryAdmin, siteConfig }: Props) {
+export function AdminDashboardShell({ affiliateLinks, analytics, articles, categories, products, secondaryAdmin, siteConfig }: Props) {
   const [activePage, setActivePage] = useState<AdminPageId>("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -142,6 +147,10 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
 
           <AdminPagePanel id="products" activePage={activePage}>
             <ProductManager initialCategories={categories} initialProducts={products} />
+          </AdminPagePanel>
+
+          <AdminPagePanel id="affiliate-links" activePage={activePage}>
+            <AffiliateLinkManager initialLinks={affiliateLinks} />
           </AdminPagePanel>
 
           <AdminPagePanel id="categories" activePage={activePage}>

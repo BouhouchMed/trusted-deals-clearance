@@ -1686,6 +1686,57 @@ textarea {
   font-weight: 800;
 }
 
+.affiliate-link-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.affiliate-link-table .admin-row {
+  grid-template-columns: minmax(170px, 0.75fr) minmax(230px, 1fr) minmax(240px, 1fr) minmax(150px, auto);
+}
+
+.affiliate-link-table a {
+  color: var(--navy);
+  font-weight: 900;
+  word-break: break-all;
+}
+
+.admin-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-inline-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  padding: 0 10px;
+  color: var(--text);
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.empty-admin-state {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  margin-top: 14px;
+  padding: 18px;
+  color: var(--muted);
+  font-weight: 850;
+}
+
 .settings-grid label {
   display: grid;
   gap: 8px;
@@ -2258,6 +2309,7 @@ textarea {
 
   .cookie-banner,
   .settings-grid,
+  .affiliate-link-form,
   .builder-grid,
   .builder-toggle-grid,
   .product-form-grid,
