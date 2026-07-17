@@ -75,8 +75,7 @@ export async function saveAdminArticle(input: ArticleInput) {
 
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { error } = await supabase.from("articles").upsert({ ...mapArticleToRow(article), is_deleted: false }, { onConflict: "slug" });
-    if (error) throw new Error(error.message);
+    await upsertArticleRow(article, false);
     return article;
   }
 
@@ -109,8 +108,7 @@ export async function updateArticle(slug: string, input: ArticleInput) {
 
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { error } = await supabase.from("articles").upsert({ ...mapArticleToRow(updated), is_deleted: false }, { onConflict: "slug" });
-    if (error) throw new Error(error.message);
+    await upsertArticleRow(updated, false);
     return updated;
   }
 
@@ -136,8 +134,7 @@ export async function deleteArticle(slug: string) {
   const supabase = getSupabaseAdmin();
   if (supabase) {
     if (isSeedArticle) {
-      const { error } = await supabase.from("articles").upsert({ ...mapArticleToRow(existing), is_deleted: true }, { onConflict: "slug" });
-      if (error) throw new Error(error.message);
+      await upsertArticleRow(existing, true);
       return;
     }
 
@@ -201,4 +198,25 @@ function mapArticleToRow(article: Article): ArticleRow {
     published_at: article.publishedAt,
     tags: article.tags
   };
+}
+
+async function upsertArticleRow(article: Article, isDeleted: boolean) {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return;
+
+  const row = mapArticleToRow(article);
+  const { error } = await supabase.from("articles").upsert({ ...row, is_deleted: isDeleted }, { onConflict: "slug" });
+  if (!error) return;
+
+  if (isMissingIsDeletedColumnError(error.message)) {
+    const retry = await supabase.from("articles").upsert(row, { onConflict: "slug" });
+    if (retry.error) throw new Error(retry.error.message);
+    return;
+  }
+
+  throw new Error(error.message);
+}
+
+function isMissingIsDeletedColumnError(message: string) {
+  return message.includes("is_deleted") && message.includes("schema cache");
 }
