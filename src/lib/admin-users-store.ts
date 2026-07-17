@@ -26,7 +26,7 @@ const secondaryAdminId = "secondary-admin";
 export async function getSecondaryAdminSettings(): Promise<SecondaryAdminSettings> {
   const user = (await getStoredAdminUsers()).find((item) => item.id === secondaryAdminId);
   return {
-    displayName: user?.displayName ?? "Second Admin",
+    displayName: user?.displayName ?? "Admin Account",
     enabled: user?.enabled ?? false,
     hasPassword: Boolean(user?.passwordHash),
     username: user?.username ?? "admin2"
@@ -39,12 +39,12 @@ export async function saveSecondaryAdminSettings(input: { displayName: string; e
   const passwordHash = input.password?.trim() ? hashAdminPassword(input.password) : existing?.passwordHash;
 
   if (input.enabled && !passwordHash) {
-    throw new Error("Set a password before enabling the second admin.");
+    throw new Error("Set a password before enabling this admin account.");
   }
 
   const nextUser: AdminUser = {
     id: secondaryAdminId,
-    displayName: input.displayName.trim() || "Second Admin",
+    displayName: input.displayName.trim() || "Admin Account",
     enabled: input.enabled,
     passwordHash: passwordHash ?? "",
     role: "admin",

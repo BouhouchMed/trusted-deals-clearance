@@ -197,7 +197,7 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
             <div className="admin-panel-heading">
               <div>
                 <h3>Admin Access</h3>
-                <p>Manage the second admin account and update its password.</p>
+                <p>Manage admin account access and update its password.</p>
               </div>
             </div>
             <AdminUserSettings initialSettings={secondaryAdmin} />

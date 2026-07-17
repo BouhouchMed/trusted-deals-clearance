@@ -27,19 +27,19 @@ export function AdminUserSettings({ initialSettings }: Props) {
     setSaving(false);
 
     if (!response.ok || !body?.settings) {
-      setStatus(body?.error || "Could not save second admin.");
+      setStatus(body?.error || "Could not save admin account.");
       return;
     }
 
     setSettings(body.settings);
     setPassword("");
-    setStatus("Second admin settings saved.");
+    setStatus("Admin account settings saved.");
   }
 
   return (
     <form className="settings-grid admin-user-settings" onSubmit={submit}>
       <label>
-        Second admin name
+        Admin account name
         <input value={settings.displayName} onChange={(event) => setSettings((current) => ({ ...current, displayName: event.target.value }))} />
       </label>
       <label>
@@ -61,7 +61,7 @@ export function AdminUserSettings({ initialSettings }: Props) {
           onChange={(event) => setSettings((current) => ({ ...current, enabled: event.target.checked }))}
           type="checkbox"
         />
-        Enable second admin
+        Enable admin account
       </label>
       <div className="admin-settings-actions">
         <button className="button" type="submit" disabled={saving}>
