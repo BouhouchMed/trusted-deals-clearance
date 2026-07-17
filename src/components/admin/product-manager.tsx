@@ -2,8 +2,8 @@
 
 import { Copy, Megaphone, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { categories, currency, getDiscount, getStore, stores } from "@/lib/data";
-import { Product } from "@/lib/types";
+import { currency, getDiscount, getStore, stores } from "@/lib/data";
+import { Category, Product } from "@/lib/types";
 
 type DraftProduct = {
   title: string;
@@ -43,8 +43,9 @@ const emptyDraft: DraftProduct = {
   published: true
 };
 
-export function ProductManager({ initialProducts }: { initialProducts: Product[] }) {
+export function ProductManager({ initialCategories, initialProducts }: { initialCategories: Category[]; initialProducts: Product[] }) {
   const [products, setProducts] = useState(initialProducts);
+  const categoryOptions = initialCategories.length ? initialCategories : [{ slug: "top-deals", title: "Top Deals", description: "", image: "", icon: "" }];
   const [draft, setDraft] = useState<DraftProduct>(emptyDraft);
   const [open, setOpen] = useState(false);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
@@ -102,12 +103,21 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
     setStatus("saving");
     setError("");
 
-    const response = await fetch(editingSlug ? `/api/admin/products/${editingSlug}` : "/api/admin/products", {
-      method: editingSlug ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editingSlug ? { action: "update", product: draft } : draft)
-    });
-    const result = (await response.json()) as { product?: Product; error?: string };
+    let result: { product?: Product; error?: string } = {};
+    let response: Response;
+
+    try {
+      response = await fetch(editingSlug ? `/api/admin/products/${editingSlug}` : "/api/admin/products", {
+        method: editingSlug ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingSlug ? { action: "update", product: draft } : draft)
+      });
+      result = (await response.json().catch(() => ({}))) as { product?: Product; error?: string };
+    } catch {
+      setStatus("error");
+      setError("Could not connect to the product API. Please try again.");
+      return;
+    }
 
     if (!response.ok || !result.product) {
       setStatus("error");
@@ -266,7 +276,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
               <label className="builder-field">
                 <span>Category</span>
                 <select value={draft.categorySlug} onChange={(event) => update("categorySlug", event.target.value)}>
-                  {categories.map((category) => (
+                  {categoryOptions.map((category) => (
                     <option value={category.slug} key={category.slug}>
                       {category.title}
                     </option>
@@ -302,6 +312,7 @@ export function ProductManager({ initialProducts }: { initialProducts: Product[]
                 Published
               </label>
             </div>
+            {status === "error" ? <div className="builder-status modal-status">{error}</div> : null}
             <div className="modal-actions">
               <button type="button" onClick={() => setOpen(false)}>
                 Cancel

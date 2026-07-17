@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminApiAuth } from "@/lib/admin-auth";
-import { settings } from "@/lib/data";
 import { getAdminProducts, saveAdminProduct } from "@/lib/product-store";
 import { CategorySlug } from "@/lib/types";
 
@@ -60,9 +59,7 @@ function validateProductPayload(body: Record<string, unknown>) {
 
   try {
     const url = new URL(String(body.affiliateUrl));
-    if (!settings.approvedAffiliateDomains.includes(url.hostname)) {
-      return "Affiliate URL domain is not in the approved retailer allowlist.";
-    }
+    if (!["http:", "https:"].includes(url.protocol)) return "Affiliate URL must start with http or https.";
   } catch {
     return "Affiliate URL is invalid.";
   }

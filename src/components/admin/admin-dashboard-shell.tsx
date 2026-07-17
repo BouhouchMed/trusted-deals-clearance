@@ -141,7 +141,7 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
           </AdminPagePanel>
 
           <AdminPagePanel id="products" activePage={activePage}>
-            <ProductManager initialProducts={products} />
+            <ProductManager initialCategories={categories} initialProducts={products} />
           </AdminPagePanel>
 
           <AdminPagePanel id="categories" activePage={activePage}>
