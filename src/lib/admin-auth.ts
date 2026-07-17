@@ -1,6 +1,7 @@
 import { createHmac, randomInt, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { normalizeUsername, validateStoredAdminCredentials } from "@/lib/admin-users-store";
 
 export const ADMIN_SESSION_COOKIE = "trusted_deals_admin_session";
 
@@ -38,8 +39,10 @@ export function validateCaptchaToken(token: string, answer: string) {
   return safeEqual(expectedAnswer, answer.trim());
 }
 
-export function validateAdminPassword(password: string) {
-  return safeEqual(password, getAdminPassword());
+export async function validateAdminCredentials(username: string, password: string) {
+  const normalizedUsername = normalizeUsername(username || "admin");
+  if ((normalizedUsername === "admin" || normalizedUsername === "owner") && safeEqual(password, getAdminPassword())) return true;
+  return validateStoredAdminCredentials(normalizedUsername, password);
 }
 
 export function createAdminSessionValue() {

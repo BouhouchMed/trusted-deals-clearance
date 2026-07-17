@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AdminLogin } from "@/components/admin/admin-login";
 import { AdminDashboardShell } from "@/components/admin/admin-dashboard-shell";
 import { createCaptchaChallenge, isAdminAuthenticated } from "@/lib/admin-auth";
+import { getSecondaryAdminSettings } from "@/lib/admin-users-store";
 import { getAnalyticsSummary } from "@/lib/analytics-store";
 import { getAllArticles } from "@/lib/article-store";
 import { getAllCategories } from "@/lib/category-store";
@@ -26,6 +27,16 @@ export default async function AdminPage() {
   const categories = await getAllCategories();
   const siteConfig = await getSiteConfig();
   const analytics = await getAnalyticsSummary();
+  const secondaryAdmin = await getSecondaryAdminSettings();
 
-  return <AdminDashboardShell analytics={analytics} articles={articles} categories={categories} products={products} siteConfig={siteConfig} />;
+  return (
+    <AdminDashboardShell
+      analytics={analytics}
+      articles={articles}
+      categories={categories}
+      products={products}
+      secondaryAdmin={secondaryAdmin}
+      siteConfig={siteConfig}
+    />
+  );
 }

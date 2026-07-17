@@ -10,6 +10,7 @@ type Props = {
 
 export function AdminLogin({ captchaQuestion, captchaToken }: Props) {
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("admin");
   const [captchaAnswer, setCaptchaAnswer] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export function AdminLogin({ captchaQuestion, captchaToken }: Props) {
     const response = await fetch("/api/admin/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password, captchaAnswer, captchaToken })
+      body: JSON.stringify({ username, password, captchaAnswer, captchaToken })
     });
 
     setLoading(false);
@@ -47,6 +48,11 @@ export function AdminLogin({ captchaQuestion, captchaToken }: Props) {
           <h1>Admin Login</h1>
           <p>Enter the admin password and captcha to manage the website.</p>
         </div>
+
+        <label>
+          Username
+          <input value={username} onChange={(event) => setUsername(event.target.value)} autoComplete="username" required />
+        </label>
 
         <label>
           Password

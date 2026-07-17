@@ -10,12 +10,12 @@ import {
   Megaphone,
   PanelLeftClose,
   PanelLeftOpen,
-  Radio,
   Settings,
   ShoppingBag,
   Users
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { AdminUserSettings } from "@/components/admin/admin-user-settings";
 import { ArticleManager } from "@/components/admin/article-manager";
 import { CategoryManager } from "@/components/admin/category-manager";
 import { HeroSliderManager } from "@/components/admin/hero-slider-manager";
@@ -24,6 +24,7 @@ import { SiteBuilderForm } from "@/components/admin/site-builder-form";
 import { AnalyticsSummary } from "@/lib/analytics-store";
 import { SiteConfig } from "@/lib/site-config";
 import { Article, Category, Product } from "@/lib/types";
+import type { SecondaryAdminSettings } from "@/lib/admin-users-store";
 
 const adminNav = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -33,7 +34,6 @@ const adminNav = [
   { id: "articles", label: "Articles", icon: FileText },
   { id: "media-library", label: "Media Library", icon: ImageIcon },
   { id: "subscribers", label: "Subscribers", icon: Users },
-  { id: "analytics", label: "Analytics", icon: Radio },
   { id: "settings", label: "Settings", icon: Settings }
 ] as const;
 
@@ -44,10 +44,11 @@ type Props = {
   articles: Article[];
   categories: Category[];
   products: Product[];
+  secondaryAdmin: SecondaryAdminSettings;
   siteConfig: SiteConfig;
 };
 
-export function AdminDashboardShell({ analytics, articles, categories, products, siteConfig }: Props) {
+export function AdminDashboardShell({ analytics, articles, categories, products, secondaryAdmin, siteConfig }: Props) {
   const [activePage, setActivePage] = useState<AdminPageId>("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -179,33 +180,6 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
             </div>
           </AdminPagePanel>
 
-          <AdminPagePanel id="analytics" activePage={activePage}>
-            <h3>Analytics Settings</h3>
-            <p>Public settings can live in application settings. Secrets must stay in server-side environment variables.</p>
-            <div className="settings-grid">
-              <label>Meta Pixel ID<input placeholder="NEXT_PUBLIC_META_PIXEL_ID" /></label>
-              <label>Default currency<input defaultValue="USD" /></label>
-              <label><input type="checkbox" defaultChecked /> Enable Meta Pixel</label>
-              <label><input type="checkbox" /> Enable advanced matching</label>
-              <label><input type="checkbox" defaultChecked /> Enable marketing cookie consent</label>
-              <label><input type="checkbox" defaultChecked /> Enable custom affiliate click events</label>
-              <label><input type="checkbox" /> Enable Meta Conversions API</label>
-              <label>Meta Test Event Code<input placeholder="META_TEST_EVENT_CODE" /></label>
-              <label>Conversions API Token<input placeholder="Stored only as META_CONVERSIONS_API_TOKEN" type="password" disabled /></label>
-            </div>
-            <hr className="admin-divider" />
-            <h3>Retargeting Performance</h3>
-            <div className="analytics-list">
-              <span>Total page views <strong>{analytics.pageViews}</strong></span>
-              <span>Unique visitors <strong>{analytics.uniqueVisitors}</strong></span>
-              <span>Total affiliate clicks <strong>{analytics.affiliateClicks}</strong></span>
-              <span>Top page <strong>{analytics.topPage}</strong></span>
-              <span>Top store <strong>{analytics.topStore}</strong></span>
-              <span>Top button location <strong>product_page</strong></span>
-              <span>Last updated <strong>{analytics.lastUpdated.slice(0, 16).replace("T", " ")}</strong></span>
-            </div>
-          </AdminPagePanel>
-
           <AdminPagePanel id="settings" activePage={activePage}>
             <div className="admin-panel-heading">
               <div>
@@ -219,6 +193,14 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
               <label><input type="checkbox" defaultChecked /> Publish products by default</label>
               <label><input type="checkbox" defaultChecked /> Show affiliate disclosure links</label>
             </div>
+            <hr className="admin-divider" />
+            <div className="admin-panel-heading">
+              <div>
+                <h3>Admin Access</h3>
+                <p>Manage the second admin account and update its password.</p>
+              </div>
+            </div>
+            <AdminUserSettings initialSettings={secondaryAdmin} />
           </AdminPagePanel>
         </div>
       </div>
