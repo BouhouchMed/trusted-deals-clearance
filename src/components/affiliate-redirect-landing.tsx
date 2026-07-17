@@ -30,7 +30,7 @@ export function AffiliateRedirectLanding({ destinationDomain, destinationUrl }: 
           <ShieldCheck size={34} />
         </div>
         <p className="redirect-kicker">{destinationDomain}</p>
-        <h1>{isRedirecting ? "يتم توجيهك لصفحة المنتوج" : "يتم التحقق من اتصالك"}</h1>
+        <h1>{isRedirecting ? "Redirecting you to the product page" : "Checking your connection"}</h1>
         <div className="redirect-progress" aria-hidden="true">
           <span />
         </div>
