@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Link2, Plus, Trash2 } from "lucide-react";
+import { Copy, Link2, Pencil, Plus, Save, Trash2, X } from "lucide-react";
 import { FormEvent, useState } from "react";
 import type { AffiliateLink } from "@/lib/affiliate-link-store";
 
@@ -14,6 +14,9 @@ export function AffiliateLinkManager({ initialLinks }: Props) {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDestinationUrl, setEditDestinationUrl] = useState("");
 
   async function createLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,7 +42,44 @@ export function AffiliateLinkManager({ initialLinks }: Props) {
     setStatus("Local affiliate link created.");
   }
 
+  function startEdit(link: AffiliateLink) {
+    setEditingSlug(link.slug);
+    setEditTitle(link.title);
+    setEditDestinationUrl(link.destinationUrl);
+    setStatus("");
+  }
+
+  function cancelEdit() {
+    setEditingSlug(null);
+    setEditTitle("");
+    setEditDestinationUrl("");
+  }
+
+  async function saveEdit(slug: string) {
+    setSaving(true);
+    setStatus("");
+
+    const response = await fetch(`/api/admin/affiliate-links/${slug}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ destinationUrl: editDestinationUrl, title: editTitle })
+    });
+    const body = (await response.json().catch(() => null)) as { error?: string; link?: AffiliateLink } | null;
+    setSaving(false);
+
+    if (!response.ok || !body?.link) {
+      setStatus(body?.error || "Could not update affiliate link.");
+      return;
+    }
+
+    setLinks((current) => current.map((link) => (link.slug === slug ? (body.link as AffiliateLink) : link)));
+    cancelEdit();
+    setStatus("Affiliate link updated.");
+  }
+
   async function deleteLink(slug: string) {
+    if (!window.confirm("Delete this affiliate link?")) return;
+
     const response = await fetch(`/api/admin/affiliate-links/${slug}`, { method: "DELETE" });
     if (!response.ok) {
       setStatus("Could not delete affiliate link.");
@@ -90,26 +130,56 @@ export function AffiliateLinkManager({ initialLinks }: Props) {
         </div>
         {links.map((link) => (
           <div className="admin-row" key={link.slug}>
-            <span>
-              <strong>{link.title}</strong>
-              <small>/{link.slug}</small>
-            </span>
-            <span>
-              <a href={link.localUrl} target="_blank" rel="noreferrer">
-                {link.localUrl}
-              </a>
-            </span>
-            <span>
-              <small>{link.destinationUrl}</small>
-            </span>
-            <span className="admin-inline-actions">
-              <button type="button" onClick={() => copy(link.localUrl)}>
-                <Copy size={14} /> Copy
-              </button>
-              <button type="button" onClick={() => deleteLink(link.slug)}>
-                <Trash2 size={14} /> Delete
-              </button>
-            </span>
+            {editingSlug === link.slug ? (
+              <>
+                <span>
+                  <input value={editTitle} onChange={(event) => setEditTitle(event.target.value)} aria-label="Affiliate link label" />
+                  <small>/{link.slug}</small>
+                </span>
+                <span>
+                  <a href={link.localUrl} target="_blank" rel="noreferrer">
+                    {link.localUrl}
+                  </a>
+                </span>
+                <span>
+                  <input value={editDestinationUrl} onChange={(event) => setEditDestinationUrl(event.target.value.trim())} aria-label="Affiliate destination URL" />
+                </span>
+                <span className="admin-inline-actions">
+                  <button type="button" onClick={() => saveEdit(link.slug)} disabled={saving}>
+                    <Save size={14} /> Save
+                  </button>
+                  <button type="button" onClick={cancelEdit} disabled={saving}>
+                    <X size={14} /> Cancel
+                  </button>
+                </span>
+              </>
+            ) : (
+              <>
+                <span>
+                  <strong>{link.title}</strong>
+                  <small>/{link.slug}</small>
+                </span>
+                <span>
+                  <a href={link.localUrl} target="_blank" rel="noreferrer">
+                    {link.localUrl}
+                  </a>
+                </span>
+                <span>
+                  <small>{link.destinationUrl}</small>
+                </span>
+                <span className="admin-inline-actions">
+                  <button type="button" onClick={() => copy(link.localUrl)}>
+                    <Copy size={14} /> Copy
+                  </button>
+                  <button type="button" onClick={() => startEdit(link)}>
+                    <Pencil size={14} /> Edit
+                  </button>
+                  <button type="button" onClick={() => deleteLink(link.slug)}>
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </span>
+              </>
+            )}
           </div>
         ))}
       </div>

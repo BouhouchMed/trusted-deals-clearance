@@ -1704,6 +1704,16 @@ textarea {
   word-break: break-all;
 }
 
+.affiliate-link-table input {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  min-height: 38px;
+  padding: 0 10px;
+  width: 100%;
+}
+
 .admin-inline-actions {
   display: flex;
   flex-wrap: wrap;

@@ -48,6 +48,24 @@ export async function deleteAffiliateLink(slug: string) {
   await saveStoredLinks(links.filter((link) => link.slug !== slug));
 }
 
+export async function updateAffiliateLink(slug: string, input: { destinationUrl: string; title?: string }) {
+  const destinationUrl = normalizeDestinationUrl(input.destinationUrl);
+  const links = await getStoredLinks();
+  const existing = links.find((link) => link.slug === slug);
+  if (!existing) throw new Error("Affiliate link not found.");
+
+  const hostname = new URL(destinationUrl).hostname.replace(/^www\./, "");
+  const updatedLink: AffiliateLink = {
+    ...existing,
+    destinationUrl,
+    localUrl: getLocalUrl(existing.slug),
+    title: input.title?.trim() || hostname
+  };
+
+  await saveStoredLinks(links.map((link) => (link.slug === slug ? updatedLink : link)));
+  return updatedLink;
+}
+
 function normalizeDestinationUrl(value: string) {
   const trimmed = value.trim();
   const url = new URL(trimmed);
