@@ -149,7 +149,7 @@ export function AdminDashboardShell({ analytics, articles, categories, products,
           </AdminPagePanel>
 
           <AdminPagePanel id="articles" activePage={activePage}>
-            <ArticleManager initialArticles={articles} />
+            <ArticleManager initialArticles={articles} initialCategories={categories} />
           </AdminPagePanel>
 
           <AdminPagePanel id="media-library" activePage={activePage}>

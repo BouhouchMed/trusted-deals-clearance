@@ -2,8 +2,7 @@
 
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { categories } from "@/lib/data";
-import { Article } from "@/lib/types";
+import { Article, Category } from "@/lib/types";
 
 const emptyDraft = {
   title: "",
@@ -15,8 +14,9 @@ const emptyDraft = {
   tags: "Shopping Guide, Deals"
 };
 
-export function ArticleManager({ initialArticles }: { initialArticles: Article[] }) {
+export function ArticleManager({ initialArticles, initialCategories }: { initialArticles: Article[]; initialCategories: Category[] }) {
   const [articles, setArticles] = useState(initialArticles);
+  const categoryOptions = initialCategories.length ? initialCategories : [{ slug: "top-deals", title: "Top Deals", description: "", image: "", icon: "" }];
   const [draft, setDraft] = useState(emptyDraft);
   const [open, setOpen] = useState(false);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
@@ -53,12 +53,21 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
     setStatus("saving");
     setError("");
 
-    const response = await fetch(editingSlug ? `/api/admin/articles/${editingSlug}` : "/api/admin/articles", {
-      method: editingSlug ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(draft)
-    });
-    const result = (await response.json()) as { article?: Article; error?: string };
+    let result: { article?: Article; error?: string } = {};
+    let response: Response;
+
+    try {
+      response = await fetch(editingSlug ? `/api/admin/articles/${editingSlug}` : "/api/admin/articles", {
+        method: editingSlug ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(draft)
+      });
+      result = (await response.json().catch(() => ({}))) as { article?: Article; error?: string };
+    } catch {
+      setStatus("error");
+      setError("Could not connect to the article API. Please try again.");
+      return;
+    }
 
     if (!response.ok || !result.article) {
       setStatus("error");
@@ -144,7 +153,7 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
               <label className="builder-field">
                 <span>Category</span>
                 <select value={draft.categorySlug} onChange={(event) => update("categorySlug", event.target.value)}>
-                  {categories.map((category) => (
+                  {categoryOptions.map((category) => (
                     <option value={category.slug} key={category.slug}>
                       {category.title}
                     </option>
@@ -157,6 +166,7 @@ export function ArticleManager({ initialArticles }: { initialArticles: Article[]
                 <textarea value={draft.excerpt} onChange={(event) => update("excerpt", event.target.value)} required />
               </label>
             </div>
+            {status === "error" ? <div className="builder-status modal-status">{error}</div> : null}
             <div className="modal-actions">
               <button type="button" onClick={() => setOpen(false)}>
                 Cancel

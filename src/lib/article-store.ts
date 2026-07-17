@@ -55,7 +55,7 @@ export async function getArticleBySlug(slug: string) {
 export async function saveAdminArticle(input: ArticleInput) {
   const storedArticles = await getStoredArticles();
   const allArticles = await getAllArticles();
-  const slug = normalizeSlug(input.slug || input.title);
+  const slug = normalizeSlug(input.slug || input.title) || `article-${Date.now()}`;
 
   if (allArticles.some((article) => article.slug === slug)) {
     throw new Error("An article with this slug already exists.");
@@ -90,7 +90,7 @@ export async function updateArticle(slug: string, input: ArticleInput) {
   const existing = allArticles.find((article) => article.slug === slug);
   if (!existing) throw new Error("Article not found.");
 
-  const nextSlug = normalizeSlug(input.slug || input.title);
+  const nextSlug = normalizeSlug(input.slug || input.title) || `article-${Date.now()}`;
   if (nextSlug !== slug && allArticles.some((article) => article.slug === nextSlug)) {
     throw new Error("An article with this slug already exists.");
   }
