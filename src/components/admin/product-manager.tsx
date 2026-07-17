@@ -260,7 +260,7 @@ export function ProductManager({ initialCategories, initialProducts }: { initial
               <Field label="Title" value={draft.title} onChange={(value) => update("title", value)} required />
               <Field label="Slug optional" value={draft.slug} onChange={(value) => update("slug", value)} />
               <Field label="Brand" value={draft.brand} onChange={(value) => update("brand", value)} required />
-              <Field label="Image URL" value={draft.image} onChange={(value) => update("image", value)} required />
+              <ImageUrlField label="Image URL" value={draft.image} onChange={(value) => update("image", value)} />
               <Field label="Regular Price" value={draft.regularPrice} onChange={(value) => update("regularPrice", value)} required type="number" />
               <Field label="Sale Price" value={draft.salePrice} onChange={(value) => update("salePrice", value)} required type="number" />
               <label className="builder-field">
@@ -325,6 +325,25 @@ export function ProductManager({ initialCategories, initialProducts }: { initial
         </div>
       ) : null}
     </>
+  );
+}
+
+function ImageUrlField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+  const canPreview = /^https?:\/\/\S+/i.test(value.trim());
+
+  return (
+    <label className="builder-field image-url-field">
+      <span>{label}</span>
+      <input value={value} onChange={(event) => onChange(event.target.value.trim())} placeholder="Paste direct image URL from retailer website" required />
+      {canPreview ? (
+        <span className="image-url-preview">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt="" />
+        </span>
+      ) : (
+        <small>Paste a direct image link starting with https://</small>
+      )}
+    </label>
   );
 }
 

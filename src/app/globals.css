@@ -1832,6 +1832,32 @@ textarea {
   outline: none;
 }
 
+.image-url-field {
+  align-content: start;
+}
+
+.image-url-field small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.image-url-preview {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.image-url-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .builder-field textarea {
   min-height: 110px;
   resize: vertical;
