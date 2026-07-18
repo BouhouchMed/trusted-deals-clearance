@@ -537,6 +537,12 @@ textarea {
   display: block;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  background: #f7fafc;
+}
+
+.deal-image img {
+  object-fit: contain;
+  padding: 14px;
 }
 
 .deal-image .badge {
@@ -899,10 +905,17 @@ textarea {
 
 .gallery {
   position: relative;
-  min-height: 610px;
+  aspect-ratio: 1 / 1;
+  min-height: 0;
   overflow: hidden;
   border-radius: var(--radius);
+  background: #f7fafc;
   box-shadow: var(--shadow);
+}
+
+.gallery img {
+  object-fit: contain;
+  padding: 24px;
 }
 
 .product-summary,
@@ -1990,7 +2003,8 @@ textarea {
 .image-url-preview img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 10px;
 }
 
 .builder-field textarea {
@@ -2319,7 +2333,7 @@ textarea {
   }
 
   .gallery {
-    min-height: 430px;
+    min-height: 0;
   }
 }
 
