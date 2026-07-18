@@ -318,6 +318,7 @@ textarea {
   max-width: 620px;
   height: var(--hero-slider-height);
   min-height: 0;
+  overflow: hidden;
   padding: 54px 8vw 72px;
 }
 
@@ -332,14 +333,24 @@ textarea {
 }
 
 .hero-content h1 {
-  font-size: clamp(2.15rem, 4.8vw, 4.2rem);
-  max-width: 560px;
+  display: -webkit-box;
+  max-width: 540px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  font-size: clamp(2rem, 3.2vw, 3.4rem);
+  line-height: 1.03;
 }
 
 .hero-content p {
+  display: -webkit-box;
   max-width: 520px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   color: rgba(255, 255, 255, 0.84);
   font-size: 1rem;
+  line-height: 1.45;
   margin: 14px 0 8px;
 }
 
@@ -2412,6 +2423,15 @@ textarea {
 
   .hero-content {
     padding-inline: 24px;
+  }
+
+  .hero-content h1 {
+    -webkit-line-clamp: 4;
+    font-size: clamp(1.7rem, 8vw, 2.45rem);
+  }
+
+  .hero-content p {
+    -webkit-line-clamp: 2;
   }
 
   .hero-slider {
