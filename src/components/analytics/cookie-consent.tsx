@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { COOKIE_CONSENT_EVENT, CookieConsentPreferences, getCookieConsent, setCookieConsent } from "@/lib/meta-pixel";
 
@@ -64,6 +65,9 @@ export function CookieConsent() {
         ) : null}
       </div>
       <div className="cookie-actions">
+        <Link className="cookie-details-link" href="/cookie-policy">
+          Cookie Details
+        </Link>
         {customizing ? (
           <button className="button" type="button" onClick={() => save(preferences)}>
             Save Preferences

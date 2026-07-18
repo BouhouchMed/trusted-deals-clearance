@@ -7,14 +7,41 @@ export default function CookiePolicyPage() {
         Trusted Deals & Clearance may use cookies for analytics, preferences, affiliate attribution, and newsletter
         functionality.
       </p>
+
+      <div className="cookie-policy-grid">
+        <article>
+          <h2>Essential Cookies</h2>
+          <p>
+            These cookies are required for the website to work correctly. They may remember basic preferences, protect
+            admin sessions, and support core site functionality. Essential cookies cannot be disabled from the cookie
+            banner.
+          </p>
+          <strong>Always active</strong>
+        </article>
+
+        <article>
+          <h2>Analytics Cookies</h2>
+          <p>
+            Analytics cookies help us understand page views, popular content, and general visitor engagement so we can
+            improve the website experience.
+          </p>
+          <strong>Optional</strong>
+        </article>
+
+        <article>
+          <h2>Marketing Cookies</h2>
+          <p>
+            Marketing cookies may include Meta Pixel and affiliate measurement tools. They help measure affiliate link
+            performance and campaign activity when enabled.
+          </p>
+          <strong>Optional</strong>
+        </article>
+      </div>
+
+      <h2>Your Choices</h2>
       <p>
-        Essential cookies keep the website working. Analytics cookies help us understand site performance. Marketing
-        cookies, including Meta Pixel when enabled, help us measure activity, build advertising audiences, show relevant
-        Facebook and Instagram ads, and understand campaign results.
-      </p>
-      <p>
-        Meta Pixel belongs to the Marketing category and only initializes after marketing consent when consent mode is
-        enabled. Use the Cookie Preferences link in the footer to update or withdraw your choices.
+        You can accept all cookies, reject non-essential cookies, or customize analytics and marketing preferences from
+        the cookie banner. You can update your choice at any time using the Cookie Preferences link in the footer.
       </p>
     </section>
   );

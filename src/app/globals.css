@@ -2097,6 +2097,18 @@ textarea {
   cursor: pointer;
 }
 
+.cookie-details-link {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--navy);
+  display: inline-flex;
+  font-weight: 850;
+  min-height: 42px;
+  padding: 0 14px;
+  text-decoration: none;
+}
+
 .cookie-options {
   display: flex;
   flex-wrap: wrap;
@@ -2122,6 +2134,35 @@ textarea {
 
 .simple-page h1 {
   font-size: clamp(2.4rem, 5vw, 4.5rem);
+}
+
+.cookie-policy-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 28px 0;
+}
+
+.cookie-policy-grid article {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 18px;
+}
+
+.cookie-policy-grid h2 {
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+
+.cookie-policy-grid p {
+  font-size: 0.95rem;
+}
+
+.cookie-policy-grid strong {
+  color: var(--navy);
+  display: inline-block;
+  margin-top: 12px;
 }
 
 .contact-form {
@@ -2407,6 +2448,10 @@ textarea {
     right: 12px;
     bottom: 12px;
     left: 12px;
+  }
+
+  .cookie-policy-grid {
+    grid-template-columns: 1fr;
   }
 
   .admin-topline,
