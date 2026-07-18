@@ -31,12 +31,18 @@ export default function CookiePolicyPage() {
         <article>
           <h2>Marketing Cookies</h2>
           <p>
-            Marketing cookies may include Meta Pixel and affiliate measurement tools. They help measure affiliate link
-            performance and campaign activity when enabled.
+            We use Meta Pixel on this website. Marketing cookies may include Meta Pixel and affiliate measurement tools.
+            They help measure affiliate link performance and campaign activity when enabled.
           </p>
           <strong>Optional</strong>
         </article>
       </div>
+
+      <h2>Meta Pixel</h2>
+      <p>
+        Meta Pixel is a marketing and measurement technology provided by Meta. On this website, Meta Pixel is used to
+        measure visits, page activity, and marketing campaign performance when marketing cookies are enabled.
+      </p>
 
       <h2>Your Choices</h2>
       <p>
