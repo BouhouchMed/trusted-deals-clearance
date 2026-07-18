@@ -45,12 +45,12 @@ export const DEFAULT_META_PIXEL_ID = "898963533504103";
 
 const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || DEFAULT_META_PIXEL_ID;
 const enableInDev = process.env.NEXT_PUBLIC_ENABLE_META_PIXEL_IN_DEV === "true";
-const consentRequired = process.env.NEXT_PUBLIC_ENABLE_MARKETING_COOKIE_CONSENT !== "false";
 const enableAdvancedMatching = process.env.NEXT_PUBLIC_ENABLE_META_ADVANCED_MATCHING !== "false";
 const enableServerEvents = process.env.NEXT_PUBLIC_ENABLE_META_CONVERSIONS_API === "true";
 const initialized = { current: false };
 const firedEvents = new Set<string>(["PageView:/"]);
 const advancedMatching = { email: "" };
+const pendingConsent: CookieConsentPreferences = { essential: true, analytics: false, marketing: false };
 
 export function hasValidPixelId() {
   return Boolean(pixelId && /^[0-9]{6,30}$/.test(pixelId));
@@ -61,18 +61,18 @@ export function canUseMetaPixel() {
   if (!hasValidPixelId()) return false;
   if (process.env.NODE_ENV === "development" && !enableInDev) return false;
   if (window.location.pathname.startsWith("/admin")) return false;
-  return !consentRequired || getCookieConsent().marketing;
+  return getCookieConsent().marketing;
 }
 
 export function getCookieConsent(): CookieConsentPreferences {
-  if (typeof window === "undefined") return { essential: true, analytics: true, marketing: true };
+  if (typeof window === "undefined") return pendingConsent;
   try {
     const raw = window.localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!raw) return { essential: true, analytics: true, marketing: true };
+    if (!raw) return pendingConsent;
     const parsed = JSON.parse(raw) as Partial<CookieConsentPreferences>;
     return { essential: true, analytics: Boolean(parsed.analytics), marketing: Boolean(parsed.marketing) };
   } catch {
-    return { essential: true, analytics: true, marketing: true };
+    return pendingConsent;
   }
 }
 

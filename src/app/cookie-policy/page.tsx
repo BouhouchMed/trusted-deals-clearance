@@ -41,7 +41,8 @@ export default function CookiePolicyPage() {
       <h2>Meta Pixel</h2>
       <p>
         Meta Pixel is a marketing and measurement technology provided by Meta. On this website, Meta Pixel is used to
-        measure visits, page activity, and marketing campaign performance when marketing cookies are enabled.
+        measure visits, page activity, and marketing campaign performance. It is not initialized unless you give consent
+        for Marketing Cookies.
       </p>
 
       <h2>Your Choices</h2>
