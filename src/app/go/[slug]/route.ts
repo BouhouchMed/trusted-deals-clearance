@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { getCategory, getStore, settings } from "@/lib/data";
+import { getCategory, getStore } from "@/lib/data";
 import { getProductBySlug } from "@/lib/product-store";
 import { Product } from "@/lib/types";
 
@@ -11,8 +11,8 @@ export async function GET(request: NextRequest, { params }: Props) {
   const product = await getProductBySlug(slug);
   if (!product) return NextResponse.redirect(new URL("/", request.url));
 
-  const destination = new URL(product.affiliateUrl);
-  if (!settings.approvedAffiliateDomains.includes(destination.hostname)) {
+  const destination = getSafeDestination(product.affiliateUrl);
+  if (!destination) {
     return NextResponse.redirect(new URL(`/products/${product.slug}`, request.url));
   }
 
@@ -20,6 +20,16 @@ export async function GET(request: NextRequest, { params }: Props) {
   await recordAffiliateClick(request, product, destination.hostname, location);
 
   return NextResponse.redirect(destination);
+}
+
+function getSafeDestination(value: string) {
+  try {
+    const url = new URL(value);
+    if (!["http:", "https:"].includes(url.protocol)) return null;
+    return url;
+  } catch {
+    return null;
+  }
 }
 
 async function recordAffiliateClick(request: NextRequest, product: Product, domain: string, location: string) {
