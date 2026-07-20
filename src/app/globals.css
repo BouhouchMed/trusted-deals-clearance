@@ -2152,8 +2152,79 @@ textarea {
 .article-editor-panel {
   width: 100%;
   max-height: none;
-  margin: 18px 0 24px;
+  margin: 18px 0 28px;
   overflow: visible;
+  border-color: rgba(20, 43, 67, 0.14);
+  background:
+    linear-gradient(180deg, rgba(247, 250, 252, 0.92), rgba(255, 255, 255, 0.98)),
+    var(--card);
+  box-shadow: 0 18px 50px rgba(20, 43, 67, 0.1);
+}
+
+.article-editor-panel .admin-panel-heading {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--line);
+  margin: -8px -8px 18px;
+  padding: 8px 8px 18px;
+}
+
+.article-editor-panel .admin-panel-heading h3 {
+  font-size: 1.35rem;
+}
+
+.article-editor-panel .product-form-grid {
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+  gap: 16px 18px;
+}
+
+.article-editor-panel .image-url-field {
+  grid-row: span 3;
+}
+
+.article-editor-panel .builder-field.wide,
+.article-editor-panel .article-editor-field {
+  grid-column: 1 / -1;
+}
+
+.article-editor-panel .builder-field input,
+.article-editor-panel .builder-field textarea,
+.article-editor-panel .builder-field select {
+  background: white;
+}
+
+.article-editor-panel .modal-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.94);
+  margin: 20px -8px -8px;
+  padding: 16px 8px 8px;
+  backdrop-filter: blur(10px);
+}
+
+.article-editor-panel + .analytics-list {
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.article-editor-panel + .analytics-list span {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  padding: 14px;
+}
+
+.article-editor-panel + .analytics-list strong {
+  border-radius: 999px;
+  background: #eef4f8;
+  color: var(--navy);
+  padding: 5px 10px;
+  font-size: 0.78rem;
 }
 
 .product-modal .admin-panel-heading button:not(.button),
@@ -2548,6 +2619,19 @@ textarea {
   .details-grid,
   .admin-stats {
     grid-template-columns: 1fr;
+  }
+
+  .article-editor-panel .product-form-grid,
+  .article-editor-panel + .analytics-list span {
+    grid-template-columns: 1fr;
+  }
+
+  .article-editor-panel .image-url-field {
+    grid-row: auto;
+  }
+
+  .article-editor-panel .modal-actions {
+    position: static;
   }
 
   .section,
