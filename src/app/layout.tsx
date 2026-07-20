@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CookieConsent } from "@/components/analytics/cookie-consent";
@@ -10,6 +11,8 @@ import { organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || "898963533504103";
+const canRenderMetaPixel = /^[0-9]{6,30}$/.test(metaPixelId);
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -72,6 +75,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-US">
       <body className={`${inter.variable} ${playfair.variable}`}>
+        {canRenderMetaPixel ? (
+          <Script id="meta-pixel-base" strategy="afterInteractive">
+            {`
+              try {
+                var tdcConsent = window.localStorage.getItem('tdc_cookie_preferences');
+                if (tdcConsent && JSON.parse(tdcConsent).marketing === false) {
+                  window.tdcMetaPixelDisabled = true;
+                }
+              } catch (error) {}
+              if (!window.tdcMetaPixelDisabled && !window.location.pathname.startsWith('/admin')) {
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${metaPixelId}');
+                fbq('track', 'PageView');
+              }
+            `}
+          </Script>
+        ) : null}
+        {canRenderMetaPixel ? (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt=""
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+            />
+          </noscript>
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify([organizationJsonLd(), websiteJsonLd()]) }}
