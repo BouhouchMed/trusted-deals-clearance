@@ -12,6 +12,7 @@ export type ArticleInput = {
   title: string;
   slug?: string;
   excerpt: string;
+  content?: string;
   categorySlug: CategorySlug;
   productSlug?: string;
   image: string;
@@ -65,6 +66,7 @@ export async function saveAdminArticle(input: ArticleInput) {
     slug,
     title: input.title.trim(),
     excerpt: input.excerpt.trim(),
+    content: input.content?.trim() || input.excerpt.trim(),
     categorySlug: input.categorySlug,
     productSlug: input.productSlug?.trim() || undefined,
     image: input.image.trim(),
@@ -99,6 +101,7 @@ export async function updateArticle(slug: string, input: ArticleInput) {
     slug: nextSlug,
     title: input.title.trim(),
     excerpt: input.excerpt.trim(),
+    content: input.content?.trim() || input.excerpt.trim(),
     categorySlug: input.categorySlug,
     productSlug: input.productSlug?.trim() || undefined,
     image: input.image.trim(),
@@ -162,6 +165,7 @@ type ArticleRow = {
   slug: string;
   title: string;
   excerpt: string | null;
+  content?: string | null;
   category_slug: CategorySlug;
   product_slug: string | null;
   image: string | null;
@@ -176,6 +180,7 @@ function mapArticleRow(row: ArticleRow): StoredArticle {
     slug: row.slug,
     title: row.title,
     excerpt: row.excerpt ?? "",
+    content: row.content ?? row.excerpt ?? "",
     categorySlug: row.category_slug,
     productSlug: row.product_slug ?? undefined,
     image: row.image ?? "",
@@ -191,6 +196,7 @@ function mapArticleToRow(article: Article): ArticleRow {
     slug: article.slug,
     title: article.title,
     excerpt: article.excerpt,
+    content: article.content ?? article.excerpt,
     category_slug: article.categorySlug,
     product_slug: article.productSlug ?? null,
     image: article.image,
@@ -208,6 +214,13 @@ async function upsertArticleRow(article: Article, isDeleted: boolean) {
   const { error } = await supabase.from("articles").upsert({ ...row, is_deleted: isDeleted }, { onConflict: "slug" });
   if (!error) return;
 
+  if (isMissingContentColumnError(error.message)) {
+    const { content: _content, ...rowWithoutContent } = row;
+    const retry = await supabase.from("articles").upsert({ ...rowWithoutContent, is_deleted: isDeleted }, { onConflict: "slug" });
+    if (retry.error) throw new Error(retry.error.message);
+    return;
+  }
+
   if (isMissingIsDeletedColumnError(error.message)) {
     const retry = await supabase.from("articles").upsert(row, { onConflict: "slug" });
     if (retry.error) throw new Error(retry.error.message);
@@ -219,4 +232,8 @@ async function upsertArticleRow(article: Article, isDeleted: boolean) {
 
 function isMissingIsDeletedColumnError(message: string) {
   return message.includes("is_deleted") && message.includes("schema cache");
+}
+
+function isMissingContentColumnError(message: string) {
+  return message.includes("content") && message.includes("schema cache");
 }

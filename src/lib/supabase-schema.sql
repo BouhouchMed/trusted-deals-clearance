@@ -46,6 +46,7 @@ create table if not exists articles (
   slug text primary key,
   title text not null,
   excerpt text,
+  content text,
   category_slug text not null,
   product_slug text,
   image text,

@@ -51,6 +51,7 @@ export type Article = {
   slug: string;
   title: string;
   excerpt: string;
+  content?: string;
   categorySlug: CategorySlug;
   productSlug?: string;
   image: string;

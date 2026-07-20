@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
       title: String(record.title),
       slug: record.slug ? String(record.slug) : undefined,
       excerpt: String(record.excerpt),
+      content: record.content ? String(record.content) : undefined,
       categorySlug: String(record.categorySlug) as CategorySlug,
       productSlug: record.productSlug ? String(record.productSlug) : undefined,
       image: String(record.image),

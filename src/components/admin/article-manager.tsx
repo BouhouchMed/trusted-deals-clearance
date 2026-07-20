@@ -1,13 +1,14 @@
 "use client";
 
-import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Bold, Heading2, ImageIcon, Italic, Link2, List, Pencil, Plus, Quote, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
 import { Article, Category } from "@/lib/types";
 
 const emptyDraft = {
   title: "",
   slug: "",
   excerpt: "",
+  content: "",
   categorySlug: "top-deals",
   image: "https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1200&q=80",
   author: "Trusted Deals Editors",
@@ -23,6 +24,7 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [editorMode, setEditorMode] = useState<"write" | "preview">("write");
 
   function update(key: keyof typeof emptyDraft, value: string) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -31,6 +33,7 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
   function openCreateForm() {
     setDraft(emptyDraft);
     setEditingSlug(null);
+    setEditorMode("write");
     setOpen(true);
   }
 
@@ -39,6 +42,7 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
       title: article.title,
       slug: article.slug,
       excerpt: article.excerpt,
+      content: article.content ?? article.excerpt,
       categorySlug: article.categorySlug,
       image: article.image,
       author: article.author,
@@ -46,6 +50,7 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
     });
     setEditingSlug(article.slug);
     setOpen(true);
+    setEditorMode("write");
   }
 
   async function createArticle(event: React.FormEvent<HTMLFormElement>) {
@@ -160,11 +165,17 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
                   ))}
                 </select>
               </label>
-              <Field label="Tags comma separated" value={draft.tags} onChange={(value) => update("tags", value)} />
+              <Field label="Search keywords comma separated" value={draft.tags} onChange={(value) => update("tags", value)} />
               <label className="builder-field wide">
-                <span>Excerpt</span>
+                <span>SEO Excerpt</span>
                 <textarea value={draft.excerpt} onChange={(event) => update("excerpt", event.target.value)} required />
               </label>
+              <RichArticleEditor
+                mode={editorMode}
+                value={draft.content}
+                onChange={(value) => update("content", value)}
+                onModeChange={setEditorMode}
+              />
             </div>
             {status === "error" ? <div className="builder-status modal-status">{error}</div> : null}
             <div className="modal-actions">
@@ -199,6 +210,94 @@ function ImageUrlField({ label, value, onChange }: { label: string; value: strin
       )}
     </label>
   );
+}
+
+function RichArticleEditor({
+  mode,
+  value,
+  onChange,
+  onModeChange
+}: {
+  mode: "write" | "preview";
+  value: string;
+  onChange: (value: string) => void;
+  onModeChange: (mode: "write" | "preview") => void;
+}) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  function insertMarkdown(before: string, after = "", placeholder = "text") {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      onChange(`${value}${before}${placeholder}${after}`);
+      return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = value.slice(start, end) || placeholder;
+    const nextValue = `${value.slice(0, start)}${before}${selected}${after}${value.slice(end)}`;
+    onChange(nextValue);
+
+    window.requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+    });
+  }
+
+  return (
+    <label className="builder-field wide article-editor-field">
+      <span>Article Content</span>
+      <div className="article-editor-toolbar" aria-label="Article editor tools">
+        <button type="button" title="Heading" onClick={() => insertMarkdown("## ", "", "Section heading")}>
+          <Heading2 size={16} />
+        </button>
+        <button type="button" title="Bold" onClick={() => insertMarkdown("**", "**", "bold text")}>
+          <Bold size={16} />
+        </button>
+        <button type="button" title="Italic" onClick={() => insertMarkdown("*", "*", "italic text")}>
+          <Italic size={16} />
+        </button>
+        <button type="button" title="List" onClick={() => insertMarkdown("- ", "", "List item")}>
+          <List size={16} />
+        </button>
+        <button type="button" title="Quote" onClick={() => insertMarkdown("> ", "", "Quote")}>
+          <Quote size={16} />
+        </button>
+        <button type="button" title="Link" onClick={() => insertMarkdown("[", "](https://example.com)", "link text")}>
+          <Link2 size={16} />
+        </button>
+        <button type="button" title="Image" onClick={() => insertMarkdown("![", "](https://example.com/image.jpg)", "image alt")}>
+          <ImageIcon size={16} />
+        </button>
+        <span className="article-editor-tabs">
+          <button type="button" className={mode === "write" ? "active" : ""} onClick={() => onModeChange("write")}>
+            Write
+          </button>
+          <button type="button" className={mode === "preview" ? "active" : ""} onClick={() => onModeChange("preview")}>
+            Preview
+          </button>
+        </span>
+      </div>
+      {mode === "write" ? (
+        <textarea
+          ref={textareaRef}
+          className="article-editor-textarea"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder="Write the full article here. Use the toolbar to add headings, links, images, lists, and quotes."
+        />
+      ) : (
+        <div className="article-editor-preview">
+          {value.trim() ? value : "Preview will appear here."}
+        </div>
+      )}
+      <small>{wordCount(value)} words</small>
+    </label>
+  );
+}
+
+function wordCount(value: string) {
+  return value.trim().split(/\s+/).filter(Boolean).length;
 }
 
 function Field({ label, value, onChange, required = false }: { label: string; value: string; onChange: (value: string) => void; required?: boolean }) {

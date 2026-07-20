@@ -50,6 +50,7 @@ export default async function ArticlePage({ params }: Props) {
   const category = getCategory(article.categorySlug);
   const products = await getAllProducts();
   const relatedProducts = getRelatedProducts(products, { categorySlug: article.categorySlug, limit: 3 });
+  const articleContent = article.content?.trim() || getDefaultArticleContent();
   const jsonLd = [
     articleJsonLd(article, category),
     breadcrumbsJsonLd([
@@ -76,21 +77,7 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       </div>
       <div className="article-body">
-        <p>
-          Smart deal shopping starts with a simple question: would this item still make sense without the markdown? Our
-          editors look for products with practical use, clear availability, recognizable stores, and pricing that feels
-          meaningfully better than the usual online noise.
-        </p>
-        <p>
-          Before buying, compare the sale price against nearby retailers, check whether pickup or shipping changes the
-          final cost, and read the return policy carefully for clearance or limited-stock items.
-        </p>
-        <h2>What to Check Before Checkout</h2>
-        <ul>
-          <li>Price history and whether the discount is meaningful.</li>
-          <li>Coupon codes, store cash, or card offers that can stack.</li>
-          <li>Delivery windows, pickup ZIP code availability, and return rules.</li>
-        </ul>
+        {renderArticleContent(articleContent)}
       </div>
       <section className="section section-muted">
         <div className="section-heading">
@@ -104,4 +91,70 @@ export default async function ArticlePage({ params }: Props) {
       </section>
     </article>
   );
+}
+
+function getDefaultArticleContent() {
+  return `Smart deal shopping starts with a simple question: would this item still make sense without the markdown? Our editors look for products with practical use, clear availability, recognizable stores, and pricing that feels meaningfully better than the usual online noise.
+
+Before buying, compare the sale price against nearby retailers, check whether pickup or shipping changes the final cost, and read the return policy carefully for clearance or limited-stock items.
+
+## What to Check Before Checkout
+- Price history and whether the discount is meaningful.
+- Coupon codes, store cash, or card offers that can stack.
+- Delivery windows, pickup ZIP code availability, and return rules.`;
+}
+
+function renderArticleContent(content: string) {
+  return content
+    .split(/\n{2,}/)
+    .map((block, index) => renderArticleBlock(block.trim(), index))
+    .filter(Boolean);
+}
+
+function renderArticleBlock(block: string, index: number) {
+  if (!block) return null;
+
+  if (block.startsWith("### ")) return <h3 key={index}>{renderInlineMarkdown(block.slice(4))}</h3>;
+  if (block.startsWith("## ")) return <h2 key={index}>{renderInlineMarkdown(block.slice(3))}</h2>;
+  if (block.startsWith("> ")) return <blockquote key={index}>{renderInlineMarkdown(block.replace(/^> /gm, ""))}</blockquote>;
+
+  const imageMatch = block.match(/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/i);
+  if (imageMatch) {
+    return (
+      <figure className="article-inline-image" key={index}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={imageMatch[2]} alt={imageMatch[1]} />
+        {imageMatch[1] ? <figcaption>{imageMatch[1]}</figcaption> : null}
+      </figure>
+    );
+  }
+
+  if (block.startsWith("- ")) {
+    return (
+      <ul key={index}>
+        {block.split("\n").map((item) => (
+          <li key={item}>{renderInlineMarkdown(item.replace(/^- /, ""))}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  return <p key={index}>{renderInlineMarkdown(block)}</p>;
+}
+
+function renderInlineMarkdown(text: string) {
+  const tokens = text.split(/(\[[^\]]+\]\(https?:\/\/[^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g).filter(Boolean);
+  return tokens.map((token, index) => {
+    const link = token.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/i);
+    if (link) {
+      return (
+        <a href={link[2]} key={`${token}-${index}`} target="_blank" rel="nofollow sponsored noreferrer">
+          {link[1]}
+        </a>
+      );
+    }
+    if (token.startsWith("**") && token.endsWith("**")) return <strong key={`${token}-${index}`}>{token.slice(2, -2)}</strong>;
+    if (token.startsWith("*") && token.endsWith("*")) return <em key={`${token}-${index}`}>{token.slice(1, -1)}</em>;
+    return token;
+  });
 }
