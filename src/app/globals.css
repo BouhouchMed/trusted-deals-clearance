@@ -1882,7 +1882,7 @@ textarea {
 }
 
 .redirect-progress span {
-  animation: redirect-progress 2.4s ease-in-out forwards;
+  animation: redirect-progress 1.2s ease-in-out forwards;
   background: linear-gradient(90deg, #15803d, #2f80ed);
   border-radius: inherit;
   display: block;

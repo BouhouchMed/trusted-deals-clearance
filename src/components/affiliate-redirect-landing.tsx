@@ -12,10 +12,10 @@ export function AffiliateRedirectLanding({ destinationDomain, destinationUrl }: 
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
-    const messageTimer = window.setTimeout(() => setIsRedirecting(true), 1200);
+    const messageTimer = window.setTimeout(() => setIsRedirecting(true), 600);
     const redirectTimer = window.setTimeout(() => {
       window.location.assign(destinationUrl);
-    }, 2400);
+    }, 1200);
 
     return () => {
       window.clearTimeout(messageTimer);
