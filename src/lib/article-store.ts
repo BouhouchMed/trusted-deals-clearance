@@ -211,29 +211,20 @@ async function upsertArticleRow(article: Article, isDeleted: boolean) {
   if (!supabase) return;
 
   const row = mapArticleToRow(article);
-  const { error } = await supabase.from("articles").upsert({ ...row, is_deleted: isDeleted }, { onConflict: "slug" });
-  if (!error) return;
+  const { content: _content, ...rowWithoutContent } = row;
+  const candidates = [{ ...row, is_deleted: isDeleted }, row, { ...rowWithoutContent, is_deleted: isDeleted }, rowWithoutContent];
+  let lastError = "";
 
-  if (isMissingContentColumnError(error.message)) {
-    const { content: _content, ...rowWithoutContent } = row;
-    const retry = await supabase.from("articles").upsert({ ...rowWithoutContent, is_deleted: isDeleted }, { onConflict: "slug" });
-    if (retry.error) throw new Error(retry.error.message);
-    return;
+  for (const candidate of candidates) {
+    const { error } = await supabase.from("articles").upsert(candidate, { onConflict: "slug" });
+    if (!error) return;
+    lastError = error.message;
+    if (!isMissingOptionalArticleColumnError(error.message)) throw new Error(error.message);
   }
 
-  if (isMissingIsDeletedColumnError(error.message)) {
-    const retry = await supabase.from("articles").upsert(row, { onConflict: "slug" });
-    if (retry.error) throw new Error(retry.error.message);
-    return;
-  }
-
-  throw new Error(error.message);
+  throw new Error(lastError || "Could not save article.");
 }
 
-function isMissingIsDeletedColumnError(message: string) {
-  return message.includes("is_deleted") && message.includes("schema cache");
-}
-
-function isMissingContentColumnError(message: string) {
-  return message.includes("content") && message.includes("schema cache");
+function isMissingOptionalArticleColumnError(message: string) {
+  return (message.includes("is_deleted") || message.includes("content")) && message.includes("schema cache");
 }
