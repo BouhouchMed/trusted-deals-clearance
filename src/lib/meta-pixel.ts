@@ -50,7 +50,7 @@ const enableServerEvents = process.env.NEXT_PUBLIC_ENABLE_META_CONVERSIONS_API =
 const initialized = { current: false };
 const firedEvents = new Set<string>(["PageView:/"]);
 const advancedMatching = { email: "" };
-const pendingConsent: CookieConsentPreferences = { essential: true, analytics: false, marketing: false };
+const defaultConsent: CookieConsentPreferences = { essential: true, analytics: true, marketing: true };
 
 export function hasValidPixelId() {
   return Boolean(pixelId && /^[0-9]{6,30}$/.test(pixelId));
@@ -65,14 +65,14 @@ export function canUseMetaPixel() {
 }
 
 export function getCookieConsent(): CookieConsentPreferences {
-  if (typeof window === "undefined") return pendingConsent;
+  if (typeof window === "undefined") return defaultConsent;
   try {
     const raw = window.localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!raw) return pendingConsent;
+    if (!raw) return defaultConsent;
     const parsed = JSON.parse(raw) as Partial<CookieConsentPreferences>;
     return { essential: true, analytics: Boolean(parsed.analytics), marketing: Boolean(parsed.marketing) };
   } catch {
-    return pendingConsent;
+    return defaultConsent;
   }
 }
 

@@ -11,7 +11,7 @@ export function CookieConsent() {
   const needsInitialChoice = useSyncExternalStore(subscribeToConsentChanges, getNeedsInitialChoice, () => false);
   const [forcedOpen, setForcedOpen] = useState(false);
   const [customizing, setCustomizing] = useState(false);
-  const [preferences, setPreferences] = useState<CookieConsentPreferences>(rejectNonEssential);
+  const [preferences, setPreferences] = useState<CookieConsentPreferences>(acceptAll);
 
   useEffect(() => {
     const openPreferences = () => {
@@ -38,8 +38,8 @@ export function CookieConsent() {
       <div>
         <h2>Cookie Preferences</h2>
         <p>
-          We use essential cookies to run the site. With your permission, analytics and marketing cookies help us measure engagement,
-          including Meta Pixel activity when marketing cookies are enabled.
+          Analytics and marketing cookies are enabled by default to help us measure engagement, including Meta Pixel
+          activity. You can reject or customize these choices at any time.
         </p>
         {customizing ? (
           <div className="cookie-options">
