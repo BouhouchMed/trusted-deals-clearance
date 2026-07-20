@@ -48,7 +48,7 @@ const enableInDev = process.env.NEXT_PUBLIC_ENABLE_META_PIXEL_IN_DEV === "true";
 const enableAdvancedMatching = process.env.NEXT_PUBLIC_ENABLE_META_ADVANCED_MATCHING !== "false";
 const enableServerEvents = process.env.NEXT_PUBLIC_ENABLE_META_CONVERSIONS_API === "true";
 const initialized = { current: false };
-const firedEvents = new Set<string>(["PageView:/"]);
+const firedEvents = new Set<string>();
 const advancedMatching = { email: "" };
 const defaultConsent: CookieConsentPreferences = { essential: true, analytics: true, marketing: true };
 
@@ -106,6 +106,7 @@ export function createEventId(eventName: string) {
 }
 
 function sendBrowserEvent(eventName: string, payload: EventPayload = {}, custom = false, eventId = createEventId(eventName)) {
+  if (eventName !== "ViewContent") return eventId;
   if (!canUseMetaPixel()) return eventId;
   initializeMetaPixel();
   try {
@@ -118,6 +119,7 @@ function sendBrowserEvent(eventName: string, payload: EventPayload = {}, custom 
 }
 
 function sendServerEvent(eventName: string, payload: EventPayload, eventId: string) {
+  if (eventName !== "ViewContent") return;
   if (!enableServerEvents || typeof window === "undefined" || !getCookieConsent().marketing) return;
   fetch("/api/analytics/meta-event", {
     method: "POST",
@@ -133,10 +135,9 @@ function sendServerEvent(eventName: string, payload: EventPayload, eventId: stri
 }
 
 export function pageView(path: string) {
-  const key = `PageView:${path}`;
+  const key = `ViewContent:${path}`;
   if (firedEvents.has(key)) return;
   firedEvents.add(key);
-  sendBrowserEvent("PageView");
 }
 
 export function trackViewContent(payload: ProductEventPayload) {
