@@ -15,7 +15,7 @@ type HomepageToggleKey = {
 const sectionToggles: Array<[HomepageToggleKey, string]> = [
   ["showHero", "Hero Slider"],
   ["showCategories", "Featured Categories"],
-  ["showTodaysDeals", "Today's Best Deals"],
+  ["showTodaysDeals", "Best Deals"],
   ["showTrendingDeals", "Trending Deals"],
   ["showLatestArticles", "Latest Articles"],
   ["showCommunity", "Facebook Community"],

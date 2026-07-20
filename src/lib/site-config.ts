@@ -48,7 +48,7 @@ export const defaultSiteConfig: SiteConfig = {
     categoriesEyebrow: "Browse by aisle",
     categoriesTitle: "Featured Categories",
     todaysDealsEyebrow: "Fresh finds",
-    todaysDealsTitle: "Today's Best Deals",
+    todaysDealsTitle: "Best Deals",
     trendingEyebrow: "Community favorites",
     trendingTitle: "Trending Deals",
     articlesEyebrow: "Smart shopping",
@@ -103,13 +103,19 @@ export async function saveSiteConfig(config: SiteConfig) {
 }
 
 export function mergeConfig(config: Partial<SiteConfig>): SiteConfig {
+  const homepage = {
+    ...defaultSiteConfig.homepage,
+    ...config.homepage
+  };
+
+  if (homepage.todaysDealsTitle === "Today's Best Deals") {
+    homepage.todaysDealsTitle = "Best Deals";
+  }
+
   return {
     ...defaultSiteConfig,
     ...config,
-    homepage: {
-      ...defaultSiteConfig.homepage,
-      ...config.homepage
-    },
+    homepage,
     footer: {
       ...defaultSiteConfig.footer,
       ...config.footer
