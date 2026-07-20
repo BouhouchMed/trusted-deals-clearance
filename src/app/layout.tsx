@@ -80,11 +80,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {`
               try {
                 var tdcConsent = window.localStorage.getItem('tdc_cookie_preferences');
+                var tdcMetaSetupSource = document.referrer || '';
+                var tdcMetaSetupQuery = window.location.search + window.location.hash;
+                var tdcIsMetaEventSetup = /(^|\\.)facebook\\.com$/i.test(new URL(tdcMetaSetupSource || window.location.href).hostname) || /events_manager|event_setup/i.test(tdcMetaSetupQuery);
+                window.tdcIsMetaEventSetup = tdcIsMetaEventSetup;
                 if (tdcConsent && JSON.parse(tdcConsent).marketing === false) {
                   window.tdcMetaPixelDisabled = true;
                 }
               } catch (error) {}
-              if (!window.tdcMetaPixelDisabled && !window.location.pathname.startsWith('/admin')) {
+              if ((!window.tdcMetaPixelDisabled || window.tdcIsMetaEventSetup) && !window.location.pathname.startsWith('/admin')) {
                 !function(f,b,e,v,n,t,s)
                 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
                 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -94,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 s.parentNode.insertBefore(t,s)}(window, document,'script',
                 'https://connect.facebook.net/en_US/fbevents.js');
                 fbq('init', '${metaPixelId}');
-                fbq('track', 'ViewContent');
+                fbq('track', window.tdcIsMetaEventSetup ? 'PageView' : 'ViewContent');
               }
             `}
           </Script>
