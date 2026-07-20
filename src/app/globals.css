@@ -2149,6 +2149,13 @@ textarea {
   box-shadow: 0 28px 80px rgba(23, 34, 45, 0.28);
 }
 
+.article-editor-panel {
+  width: 100%;
+  max-height: none;
+  margin: 18px 0 24px;
+  overflow: visible;
+}
+
 .product-modal .admin-panel-heading button:not(.button),
 .modal-actions button:not(.button) {
   min-height: 42px;

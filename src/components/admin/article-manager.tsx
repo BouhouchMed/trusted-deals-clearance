@@ -19,7 +19,7 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
   const [articles, setArticles] = useState(initialArticles);
   const categoryOptions = initialCategories.length ? initialCategories : [{ slug: "top-deals", title: "Top Deals", description: "", image: "", icon: "" }];
   const [draft, setDraft] = useState(emptyDraft);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
@@ -124,30 +124,15 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
         {status === "saved" ? "Article changes saved. Refresh the blog to see the latest list." : null}
         {status === "error" ? error : null}
       </div>
-      <div className="analytics-list">
-        {articles.map((article) => (
-          <span key={article.slug}>
-            {article.title} <strong>{article.categorySlug}</strong>
-            <button className="inline-edit-button" type="button" onClick={() => openEditForm(article)}>
-              <Pencil size={14} /> Edit
-            </button>
-            <button className="inline-edit-button danger" type="button" onClick={() => deleteArticle(article.slug)} disabled={deletingSlug === article.slug}>
-              <Trash2 size={14} /> {deletingSlug === article.slug ? "Deleting..." : "Delete"}
-            </button>
-          </span>
-        ))}
-      </div>
-
       {open ? (
-        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Create article">
-          <form className="product-modal" onSubmit={createArticle}>
+          <form className="product-modal article-editor-panel" onSubmit={createArticle}>
             <div className="admin-panel-heading">
               <div>
                 <h3>{editingSlug ? "Edit Article" : "Create Article"}</h3>
                 <p>{editingSlug ? "Update this article across the blog." : "Add a new editorial article to the blog."}</p>
               </div>
               <button type="button" onClick={() => setOpen(false)}>
-                Close
+                Hide Editor
               </button>
             </div>
             <div className="product-form-grid">
@@ -187,8 +172,21 @@ export function ArticleManager({ initialArticles, initialCategories }: { initial
               </button>
             </div>
           </form>
-        </div>
       ) : null}
+
+      <div className="analytics-list">
+        {articles.map((article) => (
+          <span key={article.slug}>
+            {article.title} <strong>{article.categorySlug}</strong>
+            <button className="inline-edit-button" type="button" onClick={() => openEditForm(article)}>
+              <Pencil size={14} /> Edit
+            </button>
+            <button className="inline-edit-button danger" type="button" onClick={() => deleteArticle(article.slug)} disabled={deletingSlug === article.slug}>
+              <Trash2 size={14} /> {deletingSlug === article.slug ? "Deleting..." : "Delete"}
+            </button>
+          </span>
+        ))}
+      </div>
     </>
   );
 }
