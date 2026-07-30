@@ -50,6 +50,10 @@ export async function Footer() {
           </section>
         ) : null}
       </div>
+      <p className="footer-disclosure">
+        Disclosure: This site contains affiliate links. We may earn a commission if you make a purchase through these
+        links at no extra cost to you.
+      </p>
     </footer>
   );
 }

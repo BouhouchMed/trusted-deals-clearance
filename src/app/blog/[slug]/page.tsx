@@ -76,6 +76,10 @@ export default async function ArticlePage({ params }: Props) {
           </span>
         </div>
       </div>
+      <div className="article-affiliate-disclosure">
+        Disclosure: This site contains affiliate links. We may earn a commission if you make a purchase through these
+        links at no extra cost to you.
+      </div>
       <div className="article-body">
         {renderArticleContent(articleContent)}
       </div>
