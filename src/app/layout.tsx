@@ -128,6 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://s.skimresources.com/js/307869X1796163.skimlinks.js"
           id="skimlinks"
           strategy="afterInteractive"
+          type="text/javascript"
         />
       </body>
     </html>
