@@ -125,8 +125,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <CookieConsent />
         <Script
+          src="https://s.skimresources.com/js/307869X1796163.skimlinks.js"
           id="skimlinks"
-          src="https://s.skimresources.com/js/3076801X1772622.skimlinks.js"
           strategy="afterInteractive"
         />
       </body>
