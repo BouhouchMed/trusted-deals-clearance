@@ -4,7 +4,19 @@
   ],
   "overrides": {
     "samsung-55-inch-crystal-uhd-tv": {
-      "featured": false
+      "featured": true
+    },
+    "better-homes-gardens-patio-set": {
+      "featured": true
+    },
+    "levi-strauss-womens-denim-jacket": {
+      "featured": true
+    },
+    "dyson-v8-cordless-vacuum": {
+      "featured": true
+    },
+    "wayfair-storage-ottoman": {
+      "featured": true
     }
   }
 }

@@ -20,6 +20,10 @@ export const metadata: Metadata = {
     default: "Trusted Deals & Clearance | Premium Daily Deals",
     template: "%s | Trusted Deals & Clearance"
   },
+  other: {
+    "fo-verify": "8447b6a2-b57d-4c10-9614-3b7eee55cbc5"
+  },
+  
   description:
     "A premium American shopping magazine for Walmart deals, home bargains, electronics offers, clearance finds, coupons, and practical buying guides.",
   applicationName: "Trusted Deals & Clearance",
