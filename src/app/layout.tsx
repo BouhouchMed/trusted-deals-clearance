@@ -20,9 +20,7 @@ export const metadata: Metadata = {
     default: "Trusted Deals & Clearance | Premium Daily Deals",
     template: "%s | Trusted Deals & Clearance"
   },
-  other: {
-    "fo-verify": "8447b6a2-b57d-4c10-9614-3b7eee55cbc5"
-  },
+  
   
   description:
     "A premium American shopping magazine for Walmart deals, home bargains, electronics offers, clearance finds, coupons, and practical buying guides.",
@@ -128,12 +126,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
         <CookieConsent />
-        <Script
-          src="https://s.skimresources.com/js/307869X1796163.skimlinks.js"
-          id="skimlinks"
-          strategy="afterInteractive"
-          type="text/javascript"
-        />
+       <Script
+  id="avantlink-verification"
+  src="https://classic.avantlink.com/affiliate_app_confirm.php?mode=js&authResponse=54d4d4c9db5461717cda4bbf67f82a3a733effff"
+  strategy="afterInteractive"
+  type="text/javascript"
+/>
       </body>
     </html>
   );
