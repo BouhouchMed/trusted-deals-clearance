@@ -132,7 +132,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   strategy="beforeInteractive"
   type="text/javascript"
 />
-
       </body>
     </html>
   );
