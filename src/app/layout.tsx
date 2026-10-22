@@ -129,9 +129,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
        <Script
   id="avantlink-verification"
   src="https://classic.avantlink.com/affiliate_app_confirm.php?mode=js&authResponse=54d4d4c9db5461717cda4bbf67f82a3a733effff"
-  strategy="afterInteractive"
+  strategy="beforeInteractive"
   type="text/javascript"
 />
+
       </body>
     </html>
   );
