@@ -76,6 +76,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-US">
+      <head>
+        <meta name="mitgo-verification" content="465a9e54-7658-4b9e-8382-8588e8a2a27a" />
+      </head>
       <body className={`${inter.variable} ${playfair.variable}`}>
         {canRenderMetaPixel ? (
           <Script id="meta-pixel-base" strategy="afterInteractive">
